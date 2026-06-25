@@ -14,6 +14,7 @@ import type { TokenPayload } from '../types/Apptype.js';
 import path from 'node:path';
 import fs from 'fs';
 import { attachUser } from '../middleware/auth.middleware.js';
+import { InventoryMetadata } from '../controllers/inventoryMetadata.controller.js';
 
 const productRouter = Router();
 
@@ -150,6 +151,10 @@ productRouter.post(
   '/shops/:shopId/products/with-variants',
   upload.array('images', 10), // Allow up to 10 images
   (req, res, next) => productController.createProductWithVariants(req, res, next)
+);
+
+productRouter.get('/shops/:shopId/metadatas', (req, res, next) => 
+  InventoryMetadata.getInventoryMetadata(req, res, next)
 );
 
 export default productRouter;

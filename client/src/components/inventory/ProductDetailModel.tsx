@@ -17,6 +17,7 @@ interface ProductDetailModalProps {
   getStockColor: (variant: ProductVariantResponseDTO) => string;
   setData:React.Dispatch<React.SetStateAction<ProductDetailResponseDTO[]>>;
   reFetch:()=> any;
+  fetchMetadata:()=>any;
 }
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
@@ -26,6 +27,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   getStockColor,
   setData,
   reFetch,
+  fetchMetadata
 }) => {
 
   const {notify,notifications} = useNotification(); 
@@ -160,6 +162,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       );
 
       const result = await productService.updateVariants(shop.id as number,selectedProduct.id,variantEdits);
+      await fetchMetadata();
       // if(result.success){
       //   notify("success", "Product update successfully");
       // }

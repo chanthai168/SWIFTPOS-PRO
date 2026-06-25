@@ -65,5 +65,10 @@ export const productService = {
     }
     const response = await api.get(url);
     return response.data;
+  },
+  getInventoryMetadata: async (shopId:number) => {
+    let url = `inventory/shops/${shopId}/metadatas`
+    const response = await api.get(url);
+    return response.data ;
   }
 };

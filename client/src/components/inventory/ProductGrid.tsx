@@ -4,8 +4,11 @@ import { productService } from "../../services/productServices";
 import { useUser } from "../../context/Context";
 import type { ProductDetailResponseDTO,ProductVariantResponseDTO } from "../../types/product";
 import ProductDetailModal from "./ProductDetailModel";
+interface ProductGridProp{
+  fetchMetadata:()=>any
+}
 
-const ProductGrid: React.FC = () => {
+const ProductGrid: React.FC<ProductGridProp> = ({fetchMetadata}) => {
   const [data, setData] = useState<ProductDetailResponseDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -128,7 +131,7 @@ const ProductGrid: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-layer2 rounded-2xl mx-4 mt-4">
+    <div className="min-h-screen bg-layer2 rounded-md mx-4 ">
 
       {/* Filters */}
       <div className="  sm:px-6  lg:px-8 py-6">
@@ -155,7 +158,6 @@ const ProductGrid: React.FC = () => {
                   </option>
                 ))}
               </select>
-                <Link to='/upload' className=" px-8 py-2 rounded-3xl bg-gray-200 text-gray-700 active:scale-90  ease-in-out">Upload product</Link>
             </div>
           </div>
         </div>
@@ -380,6 +382,8 @@ const ProductGrid: React.FC = () => {
             getStockColor={getStockColor}
             setData={setData}
             reFetch={getProductWithVariants}
+            fetchMetadata={fetchMetadata}
+            
         />
         )}
     </div>
