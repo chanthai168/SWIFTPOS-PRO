@@ -216,3 +216,4 @@ export interface InventoryLogResponseDTO {
   change_amount: number;
   created_at: string; // Timestamp of the action
 }
+

@@ -118,3 +118,17 @@ export interface InventoryLogResponseDTO {
   change_amount: number;
   created_at: string; // Timestamp of the action
 }
+
+
+export interface InventoryMetadata{
+  success:boolean,
+  rows:number,
+  data:{
+    total_selling_price:number,
+    total_cost_price:number,
+    total_product:number,
+    in_stock:number,
+    low_stock:number,
+    out_of_stock:number,
+  }
+}

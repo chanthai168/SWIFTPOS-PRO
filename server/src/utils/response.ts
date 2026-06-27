@@ -7,4 +7,12 @@ export class ResponseFormat {
         }
         return form;
     }
+    static get(data:any,rows:number){
+        const form = {
+            success:true,
+            rows:rows,
+            data:data
+        }
+        return form;
+    }
 }
