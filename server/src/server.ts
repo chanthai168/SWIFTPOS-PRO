@@ -3,7 +3,9 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser';
 import path from 'node:path';
+import supplierRouter from './routes/supplierRoutes.js';
 const __dirname = import.meta.dirname;
+
 
 
 dotenv.config();
@@ -16,6 +18,7 @@ import { RegisterRouter } from './routes/publicRoutes.js';
 import { shopRouter } from './routes/shopRoutes.js';
 import productRouter from './routes/productRoutes.js';
 import requestLogger from './middleware/logger.js';
+import purchaseOrderRouter from './routes/purchaseOrderRoutes.js';
 
 export const server = () => {
     const app = express();
@@ -42,6 +45,9 @@ export const server = () => {
 
     app.use("/api/v1/inventory",productRouter);
 
+    app.use("/api/v1/supply-chain", supplierRouter);
+
+    app.use("/api/v1/supply-chain", purchaseOrderRouter);
 
 
     app.get("/check-health",(req:Request,res:Response)=>{

@@ -157,4 +157,71 @@ export async function sendPasswordResetEmail(email:string, token:string, usernam
         html: htmlContent
     });
 }
+    export async function sendPOEmail(
+    supplierEmail: string,
+    supplierName: string,
+    po: {
+        id: number;
+        order_date: string;
+        expected_delivery_date: string | null;
+        notes: string | null;
+        total_cost: string | number;
+        items: {
+        product_name: string;
+        variant_name: string;
+        sku: string;
+        quantity: number;
+        unit_cost: string | number;
+        total_cost: string | number;
+        }[];
+    }
+    ) {
+    const itemRows = po.items.map(item => `
+        <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;">${item.product_name} (${item.variant_name})</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${item.sku}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${item.quantity}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">$${Number(item.unit_cost).toFixed(2)}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">$${Number(item.total_cost).toFixed(2)}</td>
+        </tr>
+    `).join('');
 
+    const html = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2>Purchase Order #${po.id}</h2>
+        <p>Dear ${supplierName},</p>
+        <p>Please find below our purchase order details.</p>
+
+        <p><strong>Order Date:</strong> ${new Date(po.order_date).toLocaleDateString()}</p>
+        <p><strong>Expected Delivery:</strong> ${po.expected_delivery_date ? new Date(po.expected_delivery_date).toLocaleDateString() : 'N/A'}</p>
+        ${po.notes ? `<p><strong>Notes:</strong> ${po.notes}</p>` : ''}
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+            <thead>
+            <tr style="background-color: #f3f4f6;">
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Product</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">SKU</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Qty</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Unit Cost</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            ${itemRows}
+            </tbody>
+        </table>
+
+        <p style="margin-top: 16px;"><strong>Total Amount: $${Number(po.total_cost).toFixed(2)}</strong></p>
+
+        <p style="margin-top: 24px;">Please confirm receipt of this order.</p>
+        <p>Thank you.</p>
+        </div>
+    `;
+
+    await transporter.sendMail({
+        from: `"SWIFTPOS-PRO" <${process.env.SMTP_FROM_EMAIL}>`,
+        to: supplierEmail,
+        subject: `Purchase Order #${po.id} from SWIFTPOS-PRO`,
+        html,
+    });
+    }
