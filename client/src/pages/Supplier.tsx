@@ -16,7 +16,7 @@ const Supplier: React.FC = () => {
       <>
       <div className="bg-layer2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Supply Chain</h1>
+          <h1 className="text-xl font-bold text-gray-900">Supply Chain</h1>
           <p className="mt-1 text-sm text-gray-600">Manage suppliers and purchase orders</p>
 
           <div className="mt-4 flex gap-1 border-b border-gray-200">

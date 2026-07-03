@@ -40,6 +40,16 @@ export class ProductVariantRepository {
     return result.insertId;
   }
 
+  async delete(shopId:number,productId:number,variantId:number){
+    const query = `
+      UPDATE product_variants 
+      SET is_active = FALSE, deleted_at = NOW()
+      WHERE id = ? AND shop_id = ? AND product_id = ? AND is_active = TRUE
+    `
+    const [result] = await this.pool.query<ResultSetHeader>(query,[variantId,shopId,productId])
+    return result;
+  }
+
   async findByProductId(productId: number) {
     const [rows] = await this.pool.query<RowDataPacket[]>(`
       SELECT sku,variant_name,cost_price,selling_price,pro.created_at,updated_at,
@@ -47,8 +57,8 @@ export class ProductVariantRepository {
         FROM product_variants AS pro
         LEFT JOIN product_images AS pro_img
         ON pro.product_image_id = pro_img.id
-        WHERE product_id = ?
-        ORDER BY pro.created_at ASC;
+        WHERE product_id = ? AND is_active = true AND deleted_at IS NULL
+        ORDER BY pro.created_at ASC ;
     `, [productId]);
     return rows;
   }
@@ -173,7 +183,8 @@ export class ProductVariantRepository {
      JOIN inventories i ON i.product_variant_id = pv.id
      WHERE pv.shop_id = ? 
        AND pv.product_id = ? 
-       AND pv.id IN (?)`,
+       AND pv.id IN (?) 
+       AND is_active = true AND deleted_at IS NULL`,
     [shopId, productId, variantIds]
   );
 

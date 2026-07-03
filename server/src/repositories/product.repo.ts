@@ -29,83 +29,206 @@ export class ProductRepository {
     return rows;
   }
 
+  // async getProductWithVariant(
+  //   shop_id: number,
+  //   limit: number,
+  //   offset: number,
+  //   filter: {filter:string,order:string},
+  //   category_id?: number
+  // ) {
+
+  //   const allowedFilters = ['selling_price', 'cost_price', 'created_at', 'name'];
+  //   if (filter.filter && !allowedFilters.includes(filter.filter)) {
+  //     throw new BadInputError(`filter must be one of: ${allowedFilters.join(', ')}`);
+  //   }
+
+  //   const sortFieldMap: Record<string, string> = {
+  //     selling_price: 'var.selling_price',
+  //     cost_price: 'var.cost_price',
+  //     created_at: 'p.created_at',
+  //     name: 'p.name',
+  //   };
+
+  //   const sortField = sortFieldMap[filter.filter] ?? 'p.created_at';
+  //   const sortDirection = filter.order?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+  //   let sql = `
+  //     SELECT
+  //       p.shop_id,
+  //       p.id AS product_id,
+  //       p.name,
+  //       p.description,
+  //       p.is_active,
+  //       c.id AS category_id,
+  //       c.name AS category,
+  //       c.description AS category_des,
+  //       img.id AS image_id,
+  //       img.image_url,
+  //       img.file_name,
+  //       img.file_size,
+  //       img.mimetype,
+  //       var.id AS variant_id,
+  //       var.product_image_id,
+  //       var.sku,
+  //       var.variant_name,
+  //       var.cost_price,
+  //       var.selling_price,
+  //       var.created_at,
+  //       var.updated_at,
+  //       inv.id AS inventory_id,
+  //       inv.location,
+  //       inv.quantity_on_hand,
+  //       inv.available_quantity,
+  //       inv.damaged_quantity,
+  //       inv.low_stock_threshold,
+  //       inv.last_audited,
+  //       inv.created_at AS inv_created_at,
+  //       inv.updated_at AS inv_updated_at
+  //     FROM products p
+  //     LEFT JOIN categories c ON p.category_id = c.id
+  //     LEFT JOIN product_variants var ON p.id = var.product_id
+  //     LEFT JOIN product_images img ON var.product_image_id = img.id
+  //     LEFT JOIN inventories inv ON var.id = inv.product_variant_id
+  //     WHERE p.shop_id = ? AND p.deleted_at IS NULL
+  //   `;
+
+  //   const params: any[] = [shop_id];
+
+  //   if (category_id) {
+  //     sql += ` AND p.category_id = ?`;
+  //     params.push(category_id);
+  //   }
+
+  //   sql += ` ORDER BY ${sortField} ${sortDirection}`;
+  //   sql += ` LIMIT ? OFFSET ?`;
+  //   params.push(limit, offset);
+
+  //   const [rows] = await this.pool.query<RowDataPacket[]>(sql, params);
+  //   return rows;
+  // }
+
+  //   async getProductWithVariant(
+  //   shop_id: number,
+  //   limit: number,
+  //   offset: number,
+  //   filter: {filter:string,order:string},
+  //   category_id?: number
+  // ) {
+
+  //   let sql = `
+  //     SELECT * FROM product_catalogv1_1 
+  //     WHERE shop_id = ?
+  //   `;
+
+
+  //   const params: any[] = [shop_id];
+
+  //   // Add category filter if provided
+  //   if (category_id) {
+  //     sql += ` AND category_id = ?`;
+  //     params.push(category_id);
+  //   }
+
+  //    // Add pagination
+  //   sql += `AND var_deleted_at IS NULL AND var_is_active = true` 
+
+  //   sql += ` ORDER BY ${filter.filter} ${filter.order}`;
+
+   
+  //   sql += ` LIMIT ? OFFSET ?`;
+  //   params.push(limit, offset);
+
+  //   // Execute query (example with mysql2)
+  //   let finalSQL = `
+  //   SELECT * FROM product_catalogv1_1
+  //   WHERE product_id IN (
+  //       SELECT product_id FROM (
+  //           ${sql}
+  //       ) AS subq
+  //   )
+  //       AND var_deleted_at IS NULL AND var_is_active = true;
+  //   `
+
+
+  //   const [rows,fields] = await this.pool.query(finalSQL, params);
+    
+  //   return rows;
+  // }
+
   async getProductWithVariant(
     shop_id: number,
     limit: number,
     offset: number,
-    filter: {filter:string,order:string},
+    filter: {filter: string, order: string},
     category_id?: number
-  ) {
-
-    const allowedFilters = ['selling_price', 'cost_price', 'created_at', 'name'];
-    if (filter.filter && !allowedFilters.includes(filter.filter)) {
-      throw new BadInputError(`filter must be one of: ${allowedFilters.join(', ')}`);
-    }
-
-    const sortFieldMap: Record<string, string> = {
-      selling_price: 'var.selling_price',
-      cost_price: 'var.cost_price',
-      created_at: 'p.created_at',
-      name: 'p.name',
-    };
-
-    const sortField = sortFieldMap[filter.filter] ?? 'p.created_at';
-    const sortDirection = filter.order?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-
+) {
+    // Build the query with LEFT JOIN to include products even without active variants
     let sql = `
-      SELECT
-        p.shop_id,
-        p.id AS product_id,
-        p.name,
-        p.description,
-        p.is_active,
-        c.id AS category_id,
-        c.name AS category,
-        c.description AS category_des,
-        img.id AS image_id,
-        img.image_url,
-        img.file_name,
-        img.file_size,
-        img.mimetype,
-        var.id AS variant_id,
-        var.product_image_id,
-        var.sku,
-        var.variant_name,
-        var.cost_price,
-        var.selling_price,
-        var.created_at,
-        var.updated_at,
-        inv.id AS inventory_id,
-        inv.location,
-        inv.quantity_on_hand,
-        inv.available_quantity,
-        inv.damaged_quantity,
-        inv.low_stock_threshold,
-        inv.last_audited,
-        inv.created_at AS inv_created_at,
-        inv.updated_at AS inv_updated_at
-      FROM products p
-      LEFT JOIN categories c ON p.category_id = c.id
-      LEFT JOIN product_variants var ON p.id = var.product_id
-      LEFT JOIN product_images img ON var.product_image_id = img.id
-      LEFT JOIN inventories inv ON var.id = inv.product_variant_id
-      WHERE p.shop_id = ? AND p.deleted_at IS NULL
+        SELECT 
+            p.shop_id,
+            p.id AS product_id,
+            p.name,
+            p.description,
+            p.is_active,
+            p.deleted_at,
+            cat.id AS category_id,
+            cat.name AS category,
+            cat.description AS category_des,
+            var.id AS variant_id,
+            var.sku,
+            var.variant_name,
+            var.cost_price,
+            var.selling_price,
+            var.product_image_id,
+            var.created_at,
+            var.updated_at,
+            var.deleted_at as var_deleted_at,
+            var.is_active as var_is_active,
+            img.id AS image_id,
+            img.image_url,
+            img.file_name,
+            img.file_size,
+            img.mimetype,
+            inv.id AS inventory_id,
+            inv.location,
+            inv.quantity_on_hand,
+            inv.available_quantity,
+            inv.damaged_quantity,
+            inv.low_stock_threshold,
+            inv.last_audited,
+            inv.created_at AS inv_created_at,
+            inv.updated_at AS inv_updated_at
+        FROM products p
+        LEFT JOIN categories cat ON p.category_id = cat.id
+        LEFT JOIN product_variants var ON p.id = var.product_id 
+            AND var.deleted_at IS NULL 
+            AND var.is_active = true
+        LEFT JOIN product_images img ON var.product_image_id = img.id
+        LEFT JOIN inventories inv ON var.id = inv.product_variant_id
+        WHERE p.shop_id = ?
+            AND p.deleted_at IS NULL
+            AND p.is_active = true
     `;
 
     const params: any[] = [shop_id];
 
+    // Add category filter if provided
     if (category_id) {
-      sql += ` AND p.category_id = ?`;
-      params.push(category_id);
+        sql += ` AND p.category_id = ?`;
+        params.push(category_id);
     }
 
-    sql += ` ORDER BY ${sortField} ${sortDirection}`;
+    sql += ` ORDER BY ${filter.filter} ${filter.order}`;
+
+    // Add pagination
     sql += ` LIMIT ? OFFSET ?`;
     params.push(limit, offset);
 
-    const [rows] = await this.pool.query<RowDataPacket[]>(sql, params);
+    // Execute query
+    const [rows] = await this.pool.query(sql, params);
+    
     return rows;
-  }
+}
 
   async create(shopId: number, data: {
     name: string;
@@ -177,9 +300,14 @@ export class ProductRepository {
     return rows[0] || null;
   }
 
-  async softDelete(productId: number) {
-    await this.pool.query(`
-      UPDATE products SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?
-    `, [productId]);
+  async softDelete(shopId:number,productId: number) {
+    const [result] = await this.pool.query<ResultSetHeader>(`
+    UPDATE products 
+    SET deleted_at = CURRENT_TIMESTAMP, 
+        is_active = false 
+    WHERE id = ? 
+      AND shop_id = ?;
+    `, [productId,shopId]);
+    return result;
   }
 }

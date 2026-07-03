@@ -29,7 +29,7 @@ const emptyIcon = <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="
 ;
 
 const Inventory: React.FC = () => {
-    const [data, setData] = useState<InventoryMetadata>();
+    const [data, setMetadata] = useState<InventoryMetadata>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const {shop} = useUser();
@@ -37,7 +37,7 @@ const Inventory: React.FC = () => {
     const fetchMetadata = async () => {
       try{
         const res = await productService.getInventoryMetadata(shop?.id as number);
-        setData(res);
+        setMetadata(res);
         console.log(res);
       }
       catch(error){
@@ -54,21 +54,21 @@ const Inventory: React.FC = () => {
     return(
       <>
       <div className="">
-        <div className=" flex justify-between px-4 items-center">
+        <div className=" flex justify-between px-4 py-2 items-center bg-layer2">
           <div className="max-w-7xl  py-2">
-            <h1 className="text-2xl font-bold text-gray-900">Product Catalog</h1>
+            <h1 className="text-xl font-bold text-gray-900">Product Catalog</h1>
             <p className=" text-sm text-gray-600">Manage and track your inventory</p>
           </div>
-          <Link to='/upload' className=" px-8 py-2 rounded-3xl bg-primary shadow-2xl text-gray-200  active:scale-90  ease-in-out">Upload product</Link>
+          <Link to='/upload' className=" px-8 py-2 rounded-xl font-medium bg-gray-300  text-gray-600  active:scale-90  ease-in-out">Upload product</Link>
         </div>
         
       </div>
         <div className="flex flex-wrap p-2">
           {/* Top row - 2 cards */}
           <div className="w-full sm:w-1/2 md:w-1/5 p-2">
-            <div className="bg-layer2 p-4 rounded-md h-full">
+            <div className="bg-layer2 p-4 rounded-xl h-full">
               <div className="flex items-center gap-2">
-                <div className="flex justify-center items-center rounded-lg w-12 h-12 bg-purple-100 text-purple-500">
+                <div className="flex justify-center items-center rounded-xl w-12 h-12 bg-purple-100 text-purple-500">
                   <PackageSearch />
                 </div>
                 <p className="text-lg font-semibold text-gray-600">Total product</p>
@@ -81,9 +81,9 @@ const Inventory: React.FC = () => {
           </div>
 
           <div className="w-full sm:w-1/2 md:w-1/5 p-2">
-            <div className="bg-layer2 p-4 rounded-md h-full">
+            <div className="bg-layer2 p-4 rounded-xl h-full">
               <div className="flex items-center gap-2">
-                <div className="flex justify-center items-center rounded-lg w-12 h-12 bg-blue-100 text-blue-500">
+                <div className="flex justify-center items-center rounded-xl w-12 h-12 bg-blue-100 text-blue-500">
                   <HandCoins />
                 </div>
                 <p className="text-lg font-semibold text-gray-600">Inventory values</p>
@@ -98,9 +98,9 @@ const Inventory: React.FC = () => {
 
           {/* Bottom row - 3 cards */}
           <div className="w-full sm:w-1/3 md:w-1/5 p-2">
-            <div className="bg-layer2 p-4 rounded-md h-full">
+            <div className="bg-layer2 p-4 rounded-xl h-full">
               <div className="flex items-center gap-2">
-                <div className="flex justify-center items-center rounded-lg w-12 h-12 bg-green-100 text-green-500">
+                <div className="flex justify-center items-center rounded-xl w-12 h-12 bg-green-100 text-green-500">
                   <Activity />
                 </div>
                 <p className="text-lg font-semibold text-gray-600">In stock</p>
@@ -113,9 +113,9 @@ const Inventory: React.FC = () => {
           </div>
 
           <div className="w-full sm:w-1/3 md:w-1/5 p-2">
-            <div className="bg-layer2 p-4 rounded-md h-full">
+            <div className="bg-layer2 p-4 rounded-xl h-full">
               <div className="flex items-center gap-2">
-                <div className="flex justify-center items-center rounded-lg w-12 h-12 bg-orange-100 text-orange-500">
+                <div className="flex justify-center items-center rounded-xl w-12 h-12 bg-orange-100 text-orange-500">
                   {lowIcon}
                 </div>
                 <p className="text-lg font-semibold text-gray-600">Low stock</p>
@@ -128,9 +128,9 @@ const Inventory: React.FC = () => {
           </div>
 
           <div className="w-full sm:w-1/3 md:w-1/5 p-2">
-            <div className="bg-layer2 p-4 rounded-md h-full">
+            <div className="bg-layer2 p-4 rounded-xl h-full">
               <div className="flex items-center gap-2">
-                <div className="flex justify-center items-center rounded-lg w-12 h-12 bg-red-100 text-red-500">
+                <div className="flex justify-center items-center rounded-xl w-12 h-12 bg-red-100 text-red-500">
                   {emptyIcon}
                 </div>
                 <p className="text-lg font-semibold text-gray-600">Out stock</p>

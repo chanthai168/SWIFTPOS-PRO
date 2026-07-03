@@ -22,6 +22,10 @@ export const productService = {
     const response = await api.put(`/inventory/shops/${shopId}/products`, data);
     return response.data;
   },
+  deleteProduct: async (shopId:number,productId:number)=>{
+    const response = await api.delete(`/inventory/shops/${shopId}/products/${productId}`);
+    return response.data;
+  },
 
   // Step 2: Categories
   getCategories: async (shopId: number) => {
@@ -70,5 +74,10 @@ export const productService = {
     let url = `inventory/shops/${shopId}/metadatas`
     const response = await api.get(url);
     return response.data ;
+  },
+  deleleProductVariantById:async(shopId:number,productId:number,variantId:number)=>{
+    let url = `inventory/shops/${shopId}/products/${productId}/variants/${variantId}`;
+    const res = await api.delete(url);
+    return res.data; 
   }
 };

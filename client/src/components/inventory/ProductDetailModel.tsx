@@ -1,7 +1,7 @@
 
 
-import React, { useState } from 'react';
-import { Pencil, Check, X, Edit } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Pencil, Check, X, Edit, VanIcon } from 'lucide-react';
 import ProductVariantList from './ProductVariantList';
 import type { VariantEdit } from './ProductVariantList';
 import type { ProductDetailResponseDTO, ProductVariantResponseDTO } from '../../types/product';
@@ -9,6 +9,13 @@ import { AxiosError } from 'axios';
 import { productService } from '../../services/productServices';
 import { useUser } from '../../context/Context';
 import { useNotification,NotificationContainer } from '../../public/Notify';
+
+
+
+const deleteIcon = <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
+  <path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6q-.425 0-.712-.288T4 5t.288-.712T5 4h4q0-.425.288-.712T10 3h4q.425 0 .713.288T15 4h4q.425 0 .713.288T20 5t-.288.713T19 6v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zm-6.287 10.713Q11 16.425 11 16V9q0-.425-.288-.712T10 8t-.712.288T9 9v7q0 .425.288.713T10 17t.713-.288m4 0Q15 16.426 15 16V9q0-.425-.288-.712T14 8t-.712.288T13 9v7q0 .425.288.713T14 17t.713-.288M7 6v13z"></path>
+</svg>;
+
 
 interface ProductDetailModalProps {
   selectedProduct: ProductDetailResponseDTO;
@@ -47,7 +54,21 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   // ── variant-level edit state ──
   const [variantEdits, setVariantEdits] = useState<Record<number, VariantEdit>>({});
 
-  const [activeId,setActiveId] = useState(selectedProduct.variants[0].id);
+  const [activeId, setActiveId] = useState<number>(selectedProduct?.variants?.[0]?.id ?? -1);
+
+  useEffect(() => {
+    if (!selectedProduct?.variants?.length) {
+      setActiveId(-1);
+      return;
+    }
+
+    setActiveId((prev) => {
+      if (prev === -1 || !selectedProduct.variants.some((variant) => variant.id === prev)) {
+        return selectedProduct.variants[0].id;
+      }
+      return prev;
+    });
+  }, [selectedProduct.id, selectedProduct.variants]);
 
   const startEditProduct = () => {
     setProductEdits({
@@ -60,7 +81,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     setIsEditingProduct(true);
   };
 
-  let activeVariant = selectedProduct.variants.find(e=>e.id == activeId);
+  const activeVariant = selectedProduct.variants.find((variant) => variant.id === activeId) ?? selectedProduct.variants[0] ?? null;
 
   const cancelEditProduct = () => {
     setIsEditingProduct(false);
@@ -179,9 +200,80 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     }
   }
 
+  const handleDeleteVariant = async (id:number)=>{
+    if (!id) return;
+
+    const remainingVariants = selectedProduct.variants.filter((variant) => variant.id !== id);
+
+    setData((prev) =>
+      prev.map((product) =>
+        product.id !== selectedProduct.id
+          ? product
+          : {
+              ...product,
+              variants: product.variants.filter((variant) => variant.id !== id),
+            }
+      )
+    );
+
+
+    if (remainingVariants.length > 0) {
+      setActiveId(remainingVariants[0].id);
+    } else {
+      setActiveId(-1);
+    }
+    let shopId = Number(shop?.id);
+    if(isNaN(shopId)){
+      return;
+    }
+    try{
+      const data = await productService.deleleProductVariantById(shopId,selectedProduct.id,id);
+      notify('success',`Product deleted`);
+      fetchMetadata();
+    }
+    catch(error){
+      await reFetch();
+      notify('error',"Cannot delete product variant! try again later");
+    }
+  }
+
   const handleSubmit = async ()=>{
     handleUpdate();
     handleVariantUpdate();
+  }
+
+  const handleDeleteEntireProduct = async () => {
+    if (confirm("Product will be delete forever!")) {
+      notify('success','Product is deleted');
+
+      setTimeout(async () => {
+        try {
+          let shopId = Number(shop?.id);
+          if (isNaN(shopId)) {
+            throw Error('ShopId missing');
+          }
+
+          await productService.deleteProduct(shopId, selectedProduct.id);
+
+          setData(prev => prev.filter(pro => pro.id !== selectedProduct.id));
+          
+          fetchMetadata();
+          onClose();
+        } catch (error) {
+          if (error instanceof Error) {
+            notify('error', error.message);
+          } else {
+            notify('error', 'Unknown error');
+          }
+
+          await reFetch();
+        }
+      }, 500);
+    } else {
+      notify('error','Operation cancel');
+    }
+
+    
   }
 
 
@@ -228,6 +320,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <>
                 <button
                   type="button"
+                  onClick={handleDeleteEntireProduct}
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold bg-red-600 text-white rounded-2xl hover:scale-104 transition"
+                >
+                  {deleteIcon}Delete
+                </button>
+                <button
+                  type="button"
                   onClick={saveUpdate}
                   className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-2xl hover:scale-104 transition"
                 >
@@ -236,7 +335,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={cancelEditProduct}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-gray-200 text-sm font-semibold  text-red-500 rounded-2xl hover:scale-104 transition"
+                  className="flex items-center gap-1 px-3 py-1.5 bg-gray-200 text-sm font-semibold   rounded-2xl hover:scale-104 transition"
                 >
                   <X size={15} /> Cancel
                 </button>
@@ -393,7 +492,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <ProductVariantList
               variants={listVariants}
               onVariantChange={handleVariantChange}
-              onDelete={(id) => console.log('Delete variant:', id)}
+              onDelete={(id) => handleDeleteVariant(id)}
               isEditingProduct={isEditingProduct}
               setActiveId={setActiveId}
               activeId={activeId}

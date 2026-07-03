@@ -24,8 +24,22 @@ export class ProductService {
     return await this.productRepo.findByShopId(shopId, search);
   }
 
+  async deleteProduct(shopId:number,productId:number){
+    const result = await this.productRepo.softDelete(shopId,productId);
+    return { 
+      success: result.affectedRows > 0,
+      affectedRows: result.affectedRows,
+      message: result.affectedRows > 0 ? 'Deleted successfully' : 'Item not found'
+    }
+  }
+
   async updateProduct(data:ProductUpdateDTO){
     return await this.productRepo.update(data);
+  }
+
+  async deleteProductVariant(shopId:number,productId:number,variantId:number){
+    const result = await this.variantRepo.delete(shopId,productId,variantId);
+    return result;
   }
 
   // Step 1: Create new product
@@ -166,9 +180,12 @@ export class ProductService {
   
   // Allowed values (business rules)
   const allowedFilters = ['selling_price', 'cost_price', 'created_at', 'name'];
-  if (filter.filter && !allowedFilters.includes(filter.filter)) {
+  const sortColumn = filter?.filter || 'created_at';
+
+  if (!allowedFilters.includes(sortColumn)) {
     throw new BadInputError(`filter must be one of: ${allowedFilters.join(', ')}`);
   }
+
   filter.order = (filter.order ?? 'ASC').toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
   
   // Relationship validation
@@ -178,7 +195,7 @@ export class ProductService {
       throw new NotFoundError('Category not found');
     }
   }
-    const rows = await this.productRepo.getProductWithVariant(shop_id,limit,offset,filter,category_id);
+    const rows = await this.productRepo.getProductWithVariant(shop_id,limit,offset,{ filter: sortColumn, order: filter.order },category_id);
     return rows;
   }
 

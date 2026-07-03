@@ -12,7 +12,7 @@ export default function MainLayout() {
         </nav>
 
         <main className='w-full'>
-            <div className=' bg-layer2 flex justify-end'>
+            {/* <div className=' bg-layer2 flex justify-end'>
               <div className=' flex p-2 gap-2'>
                 <div>
                   <p className=' text-sm font-semibold text-blue-500'>Manager</p>
@@ -20,7 +20,7 @@ export default function MainLayout() {
                 </div>
                 <img src={user?.picture} className=' rounded-3xl border-2 border-white shadow' alt="" width="48px"/>
               </div>
-            </div>
+            </div> */}
 
             <Outlet />
         </main>

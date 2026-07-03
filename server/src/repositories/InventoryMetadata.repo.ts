@@ -21,8 +21,15 @@ export class InventoryMetadataRepo {
         FROM product_variants AS pro
         INNER JOIN inventories AS inv 
             ON pro.id = inv.product_variant_id
+        INNER JOIN products as pros 
+            ON pro.product_id = pros.id
         WHERE pro.shop_id = ? 
-            AND inv.shop_id = ?;
+            AND inv.shop_id = ? 
+            AND pro.deleted_at IS NULL 
+            AND pro.is_active = true
+            AND pros.deleted_at IS NULL 
+            AND pro.is_active = true
+            ;
         `
         const [rows] = await pool.query<RowDataPacket[]>(metadataSQL,[shopId,shopId]);
         return rows[0] as InventoryMetadata || null;

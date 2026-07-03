@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+
 import { 
   LayoutDashboard, 
   Package, 
@@ -27,6 +29,7 @@ export const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation();
+  const {user} = useAuth0();
 
   const mainNavItems: NavItem[] = [
     { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
@@ -102,7 +105,7 @@ export const Sidebar: React.FC = () => {
                   key={index}
                   to={item.href}
                   onClick={() => setIsMobileOpen(false)} // Closes menu on mobile selection
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 group relative
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl  text-sm transition-all duration-200 group relative
                     ${isActive 
                       ? 'bg-[#00a9b5] text-white font-semibold' 
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
@@ -159,6 +162,17 @@ export const Sidebar: React.FC = () => {
 
           {/* Footer Settings Navigation */}
           <div className="flex flex-col gap-1.5 border-t border-gray-100 pt-4">
+            
+            {!isCollapsed && (
+              <div className=' flex p-2 gap-2 w-64' >
+                <img src={user?.picture} className=' rounded-3xl border-2 border-white shadow' alt="" width="48px"/>
+                <div>
+                  <p className=' text-sm font-semibold text-blue-500'>Manager</p>
+                  <p>{user?.name}</p>
+                </div>
+              </div>
+            )}
+
             {bottomNavItems.map((item, index) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.href;

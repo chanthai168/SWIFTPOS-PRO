@@ -1,5 +1,5 @@
 import type { Pool, PoolConnection, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import type { CreateOrderDTO, OrderRow } from '../types/OrderType.js';
+import type { CreateOrderDTO, OrderRow, OrderItemRow } from '../types/OrderType.js';
 
 export class OrderRepository {
   constructor(private pool: Pool) {}
@@ -81,7 +81,10 @@ export class OrderRepository {
       [orderId],
     );
 
-    return { ...(orders[0] as OrderRow), items: items as OrderRow['items'] };
+    return {
+      ...(orders[0] as OrderRow),
+      items: items as OrderItemRow[],
+    };
   }
 
   async countByShopId(shopId: number): Promise<number> {

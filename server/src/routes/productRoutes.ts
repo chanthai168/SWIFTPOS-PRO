@@ -110,6 +110,10 @@ productRouter.post('/shops/:shopId/products', (req, res, next) =>
   productController.createProduct(req, res, next)
 );
 
+productRouter.delete('/shops/:shopId/products/:productId', (req, res, next) => 
+  productController.deleteProduct(req, res, next)
+);
+
 productRouter.put('/shops/:shopId/products', (req, res, next) => 
   productController.updateProduct(req, res, next)
 );
@@ -145,6 +149,13 @@ productRouter.post(
   upload.single('image'),
   (req, res, next) => productController.createVariant(req, res, next)
 );
+
+productRouter.delete(
+  '/shops/:shopId/products/:productId/variants/:variantId',
+  (req, res, next) => productController.deleteVariantById(req, res, next)
+);
+
+///api/v1/shops/1/products/15/variants/31
 
 // Complete flow: Product with multiple variants
 productRouter.post(

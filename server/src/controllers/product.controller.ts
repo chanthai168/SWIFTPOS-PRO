@@ -1,7 +1,7 @@
 // src/controllers/ProductController.ts
 import type { Request, Response, NextFunction } from 'express';
 import { ProductService } from '../services/product.service.js';
-import { BadInputError,UnauthorizedError } from '../utils/appError.js';
+import { BadInputError,NotFoundError,UnauthorizedError } from '../utils/appError.js';
 import { formatToProductDetailResponse } from '../utils/formartter.js';
 import { restructureProductPayload } from '../utils/restructureProductPayload.js';
 import type { ProductUpdateDTO,VariantUpdateDTO } from '../types/ProductType.js';
@@ -76,6 +76,30 @@ export class ProductController {
       });
     } catch (error) {
       console.log(error);
+      next(error);
+    }
+  }
+
+  // POST /api/v1/:shopId/products/:productId
+  async deleteProduct(req: Request, res: Response, next: NextFunction) {
+    try{
+      const {shopId,productId} = req.params;
+      const shopIdN = Number(shopId);
+      const productIdN = Number(productId);
+
+      if(isNaN(shopIdN) || isNaN(productIdN)){
+        throw new BadInputError('Shop ID and product ID required!');
+      }
+
+      const result = await this.productService.deleteProduct(shopIdN,productIdN);
+      if(!result.success){
+        throw new NotFoundError('Item not found');
+      }
+
+      res.json(result);
+
+    }catch(error){
+      console.log("Delete product Error!" + error);
       next(error);
     }
   }
@@ -221,6 +245,31 @@ export class ProductController {
 
     } catch (error) {
       console.log(error);
+      next(error);
+    }
+  }
+
+  // Delete /api/v1/:shopId/products/:productId/variants/:variantId
+  async deleteVariantById(req: Request, res: Response, next: NextFunction){
+    try{
+      const {shopId,productId,variantId} = req.params;
+      const shopIdN = Number(shopId);
+      const productIdN = Number(productId);
+      const variantIdN = Number(variantId);
+
+      if(!shopIdN || !productIdN || !variantIdN){
+        throw new BadInputError("Shop Id, product Id, variant Id require");
+      }
+
+      const result = await this.productService.deleteProductVariant(shopIdN,productIdN,variantIdN);
+      res.json({
+          success: result.affectedRows > 0,
+          affectedRows: result.affectedRows,
+          message: result.affectedRows > 0 ? 'Deleted successfully' : 'Item not found'
+      })
+    }
+    catch(error){
+      console.log("Delete Variant Error:" + error);
       next(error);
     }
   }
