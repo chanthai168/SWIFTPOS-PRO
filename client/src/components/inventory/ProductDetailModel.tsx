@@ -37,6 +37,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   fetchMetadata
 }) => {
 
+
   const {notify,notifications} = useNotification(); 
 
   // ── product-level edit state ──

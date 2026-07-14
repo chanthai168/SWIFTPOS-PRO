@@ -1,3 +1,5 @@
+import LowStockList from "../components/forcasting/LowstockList";
+import ItemsRanking from "../components/forcasting/ItemsRanking";
 const InventoryReport: React.FC = () => {
     return(
       <>
@@ -7,6 +9,16 @@ const InventoryReport: React.FC = () => {
           <p className="mt-1 text-sm text-gray-600">Here is your over view for today.</p>
         </div>
       </div>
+      <div className=" flex gap-4 p-4 flex-col md:flex-row">
+        <div className="w-full md:w-[50%] overflow-scroll" style={{height:'1200px'}}>
+          <LowStockList/>
+        </div>
+        <div className="w-full md:w-[50%] overflow-scroll" style={{height:'1200px'}}>
+          <ItemsRanking/>
+        </div>
+      </div>
+
+      
       </>
 
     )
