@@ -21,6 +21,7 @@ import productRouter from './routes/productRoutes.js';
 import requestLogger from './middleware/logger.js';
 import purchaseOrderRouter from './routes/purchaseOrderRoutes.js';
 import { forcastingRouter } from './routes/forcastingRoutes.js';
+import { statsRoutes } from './routes/statsRoutes.js';
 
 export const server = () => {
     const app = express();
@@ -54,6 +55,8 @@ export const server = () => {
     app.use("/api/v1/supply-chain", purchaseOrderRouter);
 
     app.use("/api/v1/forcasting", forcastingRouter);
+
+    app.use("/api/v1/stats", statsRoutes);
 
 
     app.get("/check-health",(req:Request,res:Response)=>{

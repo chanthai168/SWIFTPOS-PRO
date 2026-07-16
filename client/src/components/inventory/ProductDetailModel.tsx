@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { Pencil, Check, X, Edit, VanIcon } from 'lucide-react';
+import { Transition } from '@headlessui/react';
+import { Fragment } from 'react';
 import ProductVariantList from './ProductVariantList';
 import type { VariantEdit } from './ProductVariantList';
 import type { ProductDetailResponseDTO, ProductVariantResponseDTO } from '../../types/product';
@@ -294,13 +296,49 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     updated_at: selectedProduct.created_at,
   }));
 
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setTimeout(() => onClose(), 300);
+  };
+
   return (
-    <div className="fixed inset-0 backdrop-blur-sm bg-black/20 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 max-w-4xl w-full max-h-[90vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <Transition
+      appear
+      show={isOpen}
+      as={Fragment}
+    >
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        {/* Backdrop */}
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/20" />
+        </Transition.Child>
+
+        {/* Modal */}
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0 scale-95"
+          enterTo="opacity-90 scale-100"
+          leave="ease-in duration-100"
+          leaveFrom="opacity-90 scale-100"
+          leaveTo="opacity-0 scale-95"
+        >
+          <div className="relative bg-white opacity-90 rounded-4xl shadow-2xl border border-gray-100 max-w-4xl w-full max-h-[90vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
 
       {/* notification*/}
       <NotificationContainer notifications={notifications} />
 
+      <div className=' border border-white'>
         {/* ── Sticky Header ── */}
         <div className="sticky top-0 bg-white border-b-4 border-primary px-6 py-4 flex justify-between items-center z-10">
           {isEditingProduct ? (
@@ -352,7 +390,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             )}
 
             {/* Close */}
-            <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-700 ml-1">
+            <button type="button" onClick={handleClose} className="text-gray-500 hover:text-gray-700 ml-1 transition-colors">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -366,7 +404,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
             {/* Image */}
-            <div className="flex justify-center items-center bg-gray-100 rounded-lg">
+            <div className="flex justify-center items-center bg-gray-100 rounded-4xl">
               {activeVariant?.image ? (
                 <img
                   src={activeVariant?.image?.image_url}
@@ -515,7 +553,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
         </div>
       </div>
-    </div>
+        </div>
+        </Transition.Child>
+      </div>
+    </Transition>
   );
 };
 

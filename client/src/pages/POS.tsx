@@ -106,9 +106,10 @@ const POS: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-layer2">
+
       {/* Header */}
-      <div className="bg-layer2 border-b border-gray-100 px-4 sm:px-6 py-4 flex items-center gap-3 flex-wrap">
+      <div className=" border-b border-gray-100 px-4 sm:px-6 py-4 flex items-center gap-3 flex-wrap">
         <div>
           <h1 className="text-xl font-bold text-gray-900">Point of Sale</h1>
           <p className="text-xs text-gray-500 mt-0.5">Quick sell · {shop?.name}</p>
@@ -128,90 +129,104 @@ const POS: React.FC = () => {
         </div>
       </div>
 
-      {/* Body */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left: Product Grid */}
-        <div className="flex-1 flex flex-col overflow-hidden p-4 gap-3">
-          <div className="flex gap-2 items-center">
-            <SearchBar value={search} onChange={setSearch} />
-          </div>
+      <div className=' bg-layer1 rounded-4xl min-h-[90vh]'>
+        {/* Body */}
+        <div className="flex flex-1 gap-4 overflow-hidden p-4">
+          {/* Left: Product Grid */}
 
-          <div className="flex gap-1.5 overflow-x-auto pb-1 flex-nowrap">
-            {categories.map(cat => (
-              <button key={cat} onClick={() => setActiveCategory(cat)}
-                className={`flex-shrink-0 text-xs font-medium px-3 py-1.5 rounded-full transition-all
-                  ${activeCategory === cat
-                    ? 'bg-primary text-white shadow-sm'
-                    : 'bg-layer2 text-gray-600 hover:bg-gray-200 border border-gray-100'
-                  }`}>
-                {cat}
-              </button>
-            ))}
-          </div>
+          <div className="flex-1 flex flex-col border border-white rounded-4xl bg-layer2 overflow-hidden p-4 gap-3">
+            <div className=' flex justify-between items-center'>
 
-          <div className="flex-1 overflow-y-auto">
-            {loadingProducts ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div key={i} className="h-44 bg-layer2 rounded-2xl animate-pulse" />
+
+              <div className="flex gap-1.5 overflow-x-auto pb-1 flex-nowrap">
+                {categories.map(cat => (
+                  <button key={cat} onClick={() => setActiveCategory(cat)}
+                    className={`flex-shrink-0 text-xs font-medium  px-3 py-1.5 rounded-full transition-all
+                      ${activeCategory === cat
+                        ? 'bg-primary text-white shadow-sm'
+                        : 'bg-gray-200 text-gray-600 hover:bg-gray-200 border border-gray-100'
+                      }`}>
+                    {cat}
+                  </button>
                 ))}
               </div>
-            ) : filtered.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-64 gap-3 text-center">
-                <p className="text-4xl">🔍</p>
-                <p className="text-sm text-gray-400">No products found.</p>
-                {search && <button onClick={() => setSearch('')} className="text-xs text-primary underline">Clear search</button>}
+              <div className="flex gap-2 items-center w-128 pr-4 ">
+                <SearchBar value={search} onChange={setSearch} />
               </div>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                {filtered.map(product => {
-                  const cartItem = items.find(i => i.variant_id === product.variant_id);
-                  return (
-                    <ProductCard
-                      key={product.variant_id}
-                      product={product}
-                      inCartQty={cartItem?.quantity ?? 0}
-                      onAdd={addItem}
-                    />
-                  );
-                })}
-              </div>
-            )}
+
+            </div>
+
+            <div className="overflow-y-auto pr-4" style={{height:'600px'}}>
+              {loadingProducts ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <div key={i} className="h-44 bg-layer2 rounded-2xl animate-pulse" />
+                  ))}
+                </div>
+              ) : filtered.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-64 gap-3 text-center">
+                  <p className="text-4xl">🔍</p>
+                  <p className="text-sm text-gray-400">No products found.</p>
+                  {search && <button onClick={() => setSearch('')} className="text-xs text-primary underline">Clear search</button>}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 py-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                  {filtered.map(product => {
+                    if(product.available_quantity == 0){
+                      return;
+                    }
+                    const cartItem = items.find(i => i.variant_id === product.variant_id);
+                    return (
+                      <ProductCard
+                        key={product.variant_id}
+                        product={product}
+                        inCartQty={cartItem?.quantity ?? 0}
+                        onAdd={addItem}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right: Cart */}
+          <div className="w-72 xl:w-80 pl-0 flex flex-col">
+            <CartPanel
+              items={items}
+              subtotal={subtotal}
+              discount={discount}
+              tax={tax}
+              onQtyChange={updateQty}
+              onRemove={removeItem}
+              onDiscountChange={setDiscount}
+              onTaxChange={setTax}
+              onCheckout={() => setShowCheckout(true)}
+              loading={checkoutLoading}
+            />
           </div>
         </div>
-
-        {/* Right: Cart */}
-        <div className="w-72 xl:w-80 flex-shrink-0 p-4 pl-0 flex flex-col">
-          <CartPanel
+        
+        
+        {showCheckout && (
+          
+          <CheckoutModal
             items={items}
             subtotal={subtotal}
             discount={discount}
             tax={tax}
-            onQtyChange={updateQty}
-            onRemove={removeItem}
-            onDiscountChange={setDiscount}
-            onTaxChange={setTax}
-            onCheckout={() => setShowCheckout(true)}
-            loading={checkoutLoading}
+            total={total}
+            onConfirm={handleCheckout}
+            onClose={() => setShowCheckout(false)}
           />
-        </div>
+          
+        )}
+        
+
+        {showLogs && shop?.id && (
+          <TransactionLog shopId={shop.id} onClose={() => setShowLogs(false)} />
+        )}
       </div>
-
-      {showCheckout && (
-        <CheckoutModal
-          items={items}
-          subtotal={subtotal}
-          discount={discount}
-          tax={tax}
-          total={total}
-          onConfirm={handleCheckout}
-          onClose={() => setShowCheckout(false)}
-        />
-      )}
-
-      {showLogs && shop?.id && (
-        <TransactionLog shopId={shop.id} onClose={() => setShowLogs(false)} />
-      )}
     </div>
   );
 };

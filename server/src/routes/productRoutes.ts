@@ -14,7 +14,7 @@ import type { TokenPayload } from '../types/Apptype.js';
 import path from 'node:path';
 import fs from 'fs';
 import { attachUser } from '../middleware/auth.middleware.js';
-import { InventoryMetadata } from '../controllers/inventoryMetadata.controller.js';
+import { InventoryMetadata } from '../controllers/stats.controller.js';
 
 const productRouter = Router();
 

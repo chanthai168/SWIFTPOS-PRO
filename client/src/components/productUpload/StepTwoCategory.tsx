@@ -205,13 +205,13 @@ const Step2Category: React.FC<Step2CategoryProps> = ({
       <div className="flex justify-between mt-8">
         <button
           onClick={onBack}
-          className="px-6 py-2 border flex items-center border-gray-300 text-gray-700 font-medium rounded-4xl hover:bg-gray-50"
+          className="px-6 py-2  flex items-center bg-gray-200 hover:scale-102 transition-all text-gray-700 font-medium rounded-4xl "
         >
           {angleIcon} Back
         </button>
         <button
           onClick={onNext}
-          className="px-6 py-2 flex items-center bg-blue-600 text-white font-medium rounded-4xl hover:bg-blue-700"
+          className="px-6 py-2 flex items-center bg-primary text-white font-medium rounded-xl hover:scale-102 transition-all"
         >
           Next: Variants <span className=' rotate-180'>{angleIcon}</span>
         </button>

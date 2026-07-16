@@ -1,4 +1,4 @@
-    import React, { useState } from 'react';
+    import React, { useEffect, useState } from 'react';
     import { X } from 'lucide-react';
     import type { Supplier } from '../../types/supplier';
 
@@ -16,6 +16,8 @@
     }) => Promise<void>;
     }
 
+    const MODAL_TRANSITION_MS = 220;
+
     const SupplierFormModal: React.FC<SupplierFormModalProps> = ({ initial, onClose, onSubmit }) => {
     const [name, setName] = useState(initial?.name ?? '');
     const [contactPerson, setContactPerson] = useState(initial?.contact_person ?? '');
@@ -28,8 +30,21 @@
     );
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isVisible, setIsVisible] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
 
     const isEdit = Boolean(initial);
+
+    useEffect(() => {
+        const timer = window.setTimeout(() => setIsVisible(true), 10);
+        return () => window.clearTimeout(timer);
+    }, []);
+
+    const requestClose = () => {
+        if (isClosing) return;
+        setIsClosing(true);
+        window.setTimeout(() => onClose(), MODAL_TRANSITION_MS);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -59,15 +74,23 @@
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-        <div className="w-full max-w-lg rounded-lg bg-white shadow-xl">
+        <div
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/20 px-4 backdrop-blur-sm transition-opacity duration-300 ease-out ${
+            isVisible && !isClosing ? 'opacity-100' : 'opacity-0'
+        }`}
+        >
+        <div
+            className={`w-full max-w-lg rounded-4xl border-white border bg-white opacity-80 shadow-xl transition-all duration-300 ease-out ${
+            isVisible && !isClosing ? 'translate-y-0 scale-100 opacity-80' : '-translate-y-4 scale-95 opacity-0'
+            }`}
+        >
             <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
             <h2 className="text-lg font-semibold text-gray-900">
                 {isEdit ? 'Edit Supplier' : 'Add Supplier'}
             </h2>
             <button
-                onClick={onClose}
-                className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                onClick={requestClose}
+                className="rounded-full p-2 bg-gray-200  text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                 aria-label="Close"
             >
                 <X size={20} />
@@ -87,7 +110,7 @@
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 placeholder="e.g. Fresh Farm Produce Co."
                 />
             </div>
@@ -99,7 +122,7 @@
                     type="text"
                     value={contactPerson}
                     onChange={(e) => setContactPerson(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 />
                 </div>
                 <div>
@@ -108,7 +131,7 @@
                     type="text"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 />
                 </div>
             </div>
@@ -119,7 +142,7 @@
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 />
             </div>
 
@@ -129,7 +152,7 @@
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 rows={2}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 />
             </div>
 
@@ -141,7 +164,7 @@
                     min={0}
                     value={leadTimeDays}
                     onChange={(e) => setLeadTimeDays(parseInt(e.target.value) || 0)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 />
                 </div>
                 <div className="flex items-center gap-2 pb-2">
@@ -150,7 +173,7 @@
                     type="checkbox"
                     checked={isActive}
                     onChange={(e) => setIsActive(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+                    className="h-4 w-4 rounded-full border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
                 <label htmlFor="is_active" className="text-sm text-gray-700">
                     Active supplier
@@ -161,15 +184,15 @@
             <div className="flex justify-end gap-3 border-t border-gray-200 pt-4">
                 <button
                 type="button"
-                onClick={onClose}
-                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                onClick={requestClose}
+                className="rounded-full p-2 bg-layer3 px-4 py-2 text-sm font-medium text-gray-700 "
                 >
                 Cancel
                 </button>
                 <button
                 type="submit"
                 disabled={submitting}
-                className="rounded-xl bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
+                className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
                 >
                 {submitting ? 'Saving...' : isEdit ? 'Save Changes' : 'Add Supplier'}
                 </button>

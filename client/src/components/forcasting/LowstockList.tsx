@@ -136,7 +136,7 @@ const LowStockList: React.FC = () => {
 
     if (errorMs) {
         return (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+            <div className="bg-red-50 border border-red-200 rounded-xl  p-6 text-center">
                 <ShieldExclamationIcon className="w-12 h-12 text-red-400 mx-auto mb-3" />
                 <p className="text-red-700 font-medium">{errorMs}</p>
                 <button 
@@ -151,7 +151,7 @@ const LowStockList: React.FC = () => {
 
     if (!lowStockItems || lowStockItems.length === 0) {
         return (
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-12 text-center">
+            <div className=" from-green-50 to-emerald-50 border border-green-200 rounded-xl p-12 text-center" >
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
                     <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
@@ -173,7 +173,7 @@ const LowStockList: React.FC = () => {
     const criticalItems = lowStockItems.filter(item => item.available_quantity === 0).length;
 
     return (
-        <div className=" w-full bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className=" w-full bg-layer2 rounded-4xl border border-white shadow-lg overflow-hidden" style={{minHeight:'100%'}}>
             {/* Enhanced Header */}
             <div className="bg-gradient-to-r px-6 py-5">
                 <div className="flex items-center justify-between">
@@ -240,14 +240,14 @@ const LowStockList: React.FC = () => {
                             <div
                                 key={item.variant_id}
                                 onClick={() => openModal(item)}
-                                className="group relative bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1"
+                                className="group relative  border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1"
                             >
                                 {/* Status Bar */}
                                 {/* <div className={`h-1 ${getStatusColor(item.stock_status)}`}></div> */}
                                 
-                                <div className="flex h-36">
+                                <div className="flex h-36 p-2 ">
                                     {/* Image Section */}
-                                    <div className="w-1/5 bg-gray-100 flex justify-center items-center relative overflow-hidden">
+                                    <div className="w-1/5 bg-gray-100 rounded-xl flex justify-center items-center relative overflow-hidden">
                                             <img
                                                 src={resolveImageUrl(item.image_url)}
                                                 alt={item.product_name}
@@ -372,25 +372,26 @@ const LowStockList: React.FC = () => {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
+                        <div className="fixed inset-0 backdrop-blur-sm bg-black/20" />
                     </Transition.Child>
 
                     <div className="fixed inset-0 overflow-y-auto">
                         <div className="flex min-h-full items-center justify-center p-4">
                             <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 scale-95 -translate-x-4 translate-y-4"
+                                    enterTo="opacity-85 scale-100 translate-0"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-85 scale-100"
+                                    leaveTo="opacity-0 scale-95"
                             >
-                                <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all">
+                                <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden opacity-85 rounded-4xl  bg-white shadow-2xl transition-all">
                                     {selectedItem && (
                                         <>
+                                            <div className=" border border-white">
                                             {/* Modal Header with Image */}
-                                            <div className="relative h-30 bg-gradient-to-r from-blue-600 to-blue-700">
+                                            <div className="relative h-30  ">
 
                                                 <div className="absolute bottom-4 left-6 right-6 flex items-end justify-between">
                                                     <div className="flex items-center gap-4">
@@ -410,11 +411,11 @@ const LowStockList: React.FC = () => {
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <div className="text-white">
+                                                        <div className="text-gray-600">
                                                             <Dialog.Title className="text-2xl font-bold">
                                                                 {selectedItem.product_name}
                                                             </Dialog.Title>
-                                                            <p className="text-blue-100 text-sm">
+                                                            <p className="text-gray-500 text-sm">
                                                                 {selectedItem.variant_name} • SKU: {selectedItem.variant_sku}
                                                             </p>
                                                         </div>
@@ -423,9 +424,9 @@ const LowStockList: React.FC = () => {
                                                         </span>
                                                     </div>
 
-                                                                                                    <button
+                                                <button
                                                     onClick={closeModal}
-                                                    className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors text-white z-10"
+                                                    className="absolute top-4 right-4 p-2 bg-gray-200  hover:scale-105 rounded-full text-gray-600 z-10"
                                                 >
                                                     <XMarkIcon className="w-6 h-6" />
                                                 </button>
@@ -436,35 +437,35 @@ const LowStockList: React.FC = () => {
                                             <div className="p-4">
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                     {/* Stock Information */}
-                                                    <div className="bg-gray-50 rounded-xl p-5">
+                                                    <div className="bg-gray-100 rounded-xl p-5">
                                                         <div className="flex items-center gap-2 mb-3">
                                                             <CubeIcon className="w-5 h-5 text-gray-600" />
                                                             <h4 className="font-semibold text-gray-800">Stock Information</h4>
                                                         </div>
                                                         <div className="space-y-3">
-                                                            <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                                                            <div className="flex justify-between items-center p-2 border-b border-gray-300">
                                                                 <span className="text-sm text-gray-600">Available</span>
-                                                                <span className={`text-lg font-bold ${
+                                                                <span className={`text-sm font-bold ${
                                                                     selectedItem.available_quantity === 0 ? 'text-red-600' : 'text-gray-800'
                                                                 }`}>
                                                                     {selectedItem.available_quantity}
                                                                 </span>
                                                             </div>
-                                                            <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                                                            <div className="flex justify-between items-center p-2 border-b border-gray-300">
                                                                 <span className="text-sm text-gray-600">On Hand</span>
-                                                                <span className="text-lg font-bold text-gray-800">
+                                                                <span className="text-sm font-bold text-gray-800">
                                                                     {selectedItem.quantity_on_hand}
                                                                 </span>
                                                             </div>
-                                                            <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                                                            <div className="flex justify-between items-center p-2 border-b border-gray-300">
                                                                 <span className="text-sm text-gray-600">Damaged</span>
-                                                                <span className="text-lg font-bold text-red-600">
+                                                                <span className="text-sm font-bold text-red-600">
                                                                     {selectedItem.damaged_quantity}
                                                                 </span>
                                                             </div>
-                                                            <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                                                            <div className="flex justify-between items-center p-2 border-b border-gray-300">
                                                                 <span className="text-sm text-gray-600">Threshold</span>
-                                                                <span className="text-lg font-bold text-gray-800">
+                                                                <span className="text-sm font-bold text-gray-800">
                                                                     {selectedItem.low_stock_threshold}
                                                                 </span>
                                                             </div>
@@ -472,19 +473,19 @@ const LowStockList: React.FC = () => {
                                                     </div>
 
                                                     {/* Product Details */}
-                                                    <div className="bg-gray-50 rounded-xl p-5">
+                                                    <div className="bg-gray-100 rounded-xl p-5">
                                                         <div className="flex items-center gap-2 mb-3">
                                                             <TagIcon className="w-5 h-5 text-gray-600" />
                                                             <h4 className="font-semibold text-gray-800">Product Details</h4>
                                                         </div>
                                                         <div className="space-y-3">
-                                                            <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                                                            <div className="flex justify-between items-center p-2 border-b border-gray-300">
                                                                 <span className="text-sm text-gray-600">Category</span>
                                                                 <span className="text-sm font-medium text-gray-800">
                                                                     {selectedItem.category_name || 'Uncategorized'}
                                                                 </span>
                                                             </div>
-                                                            <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                                                            <div className="flex justify-between items-center p-2 border-b border-gray-300">
                                                                 <span className="text-sm text-gray-600">Location</span>
                                                                 <div className="flex items-center gap-1">
                                                                     <MapPinIcon className="w-4 h-4 text-gray-400" />
@@ -493,13 +494,13 @@ const LowStockList: React.FC = () => {
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                            <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                                                            <div className="flex justify-between items-center p-2 border-b border-gray-300">
                                                                 <span className="text-sm text-gray-600">Cost Price</span>
                                                                 <span className="text-sm font-medium text-gray-800">
                                                                     {formatCurrency(selectedItem.cost_price)}
                                                                 </span>
                                                             </div>
-                                                            <div className="flex justify-between items-center p-2 bg-white rounded-lg">
+                                                            <div className="flex justify-between items-center p-2 border-b border-gray-300">
                                                                 <span className="text-sm text-gray-600">Selling Price</span>
                                                                 <span className="text-sm font-bold text-gray-800">
                                                                     {formatCurrency(selectedItem.selling_price)}
@@ -562,14 +563,15 @@ const LowStockList: React.FC = () => {
                                             <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
                                                 <button
                                                     onClick={closeModal}
-                                                    className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+                                                    className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-200 rounded-full hover:scale-102 transition-all"
                                                 >
                                                     Close
                                                 </button>
-                                                <button className="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl flex items-center gap-2">
+                                                <button className="px-5 py-2.5 text-sm font-medium text-white bg-primary rounded-full hover:scale-102 transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
                                                     <ShoppingCartIcon className="w-4 h-4" />
-                                                    Create Purchase Order
+                                                    Reorder Now
                                                 </button>
+                                            </div>
                                             </div>
                                         </>
                                     )}

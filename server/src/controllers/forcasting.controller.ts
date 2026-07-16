@@ -30,4 +30,18 @@ export class ForcastingController{
         }
 
     }
+
+    static async getSaleAnalytic(req:Request,res:Response,next:NextFunction){
+        const auth0Id = req.user?.auth0_id;
+
+        try{
+            const results = await ForcastingService.getSaleAnalytic(auth0Id);
+            res.json(ResponseFormat.get(results,1));
+        }
+        catch(error){
+            console.log('Get items-ranking error:' + error);
+            next(error);
+        }
+
+    }
 }

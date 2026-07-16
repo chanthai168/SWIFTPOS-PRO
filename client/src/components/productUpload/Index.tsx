@@ -152,7 +152,7 @@ const ProductUpload: React.FC<ProductUploadProps> = ({ shopId, onSuccess, onCanc
         )}
 
         {/* Step Content */}
-        <div className="bg-layer2 rounded-3xl shadow-lg p-6 sm:p-8">
+        <div className="bg-layer2 rounded-xl shadow-lg p-6 sm:p-8">
           {currentStep === 1 && (
             <Step1Product
               shopId={shopId}
@@ -186,7 +186,7 @@ const ProductUpload: React.FC<ProductUploadProps> = ({ shopId, onSuccess, onCanc
           )}
         </div>
 
-        {/* Cancel Button */}
+        {/* Cancel Button
         {onCancel && (
           <div className="mt-6 text-center">
             <button
@@ -196,7 +196,7 @@ const ProductUpload: React.FC<ProductUploadProps> = ({ shopId, onSuccess, onCanc
               Cancel and go back
             </button>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

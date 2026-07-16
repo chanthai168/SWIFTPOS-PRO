@@ -28,8 +28,13 @@ interface NavItem {
 export const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [avatarFailed, setAvatarFailed] = useState(false);
   const location = useLocation();
-  const {user} = useAuth0();
+  const { user } = useAuth0();
+
+  const profileName = user?.name || 'Manager';
+  const profileImage = user?.picture;
+  const avatarSrc = avatarFailed || !profileImage ? `https://ui-avatars.com/api/?name=${encodeURIComponent(profileName)}&background=00a9b5&color=fff&size=96` : profileImage;
 
   const mainNavItems: NavItem[] = [
     { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
@@ -65,7 +70,7 @@ export const Sidebar: React.FC = () => {
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed md:sticky top-0 left-0 h-screen bg-layer2 border-r border-gray-100 flex flex-col justify-between p-4 z-40 transition-all duration-300 ease-in-out
+        className={`fixed md:sticky top-0 left-0 h-screen bg-layer2  flex flex-col justify-between p-4 z-40 transition-all duration-300 ease-in-out
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           w-64 ${isCollapsed ? 'md:w-20' : 'md:w-64'}
         `}
@@ -76,13 +81,14 @@ export const Sidebar: React.FC = () => {
           <div className="flex items-center justify-between min-h-[40px] mt-12 md:mt-0">
             <div className="flex items-center gap-3 overflow-hidden">
               {/* VK Brand Icon */}
-              <div className="flex items-center justify-center min-w-[32px] h-8 bg-[#00a9b5]/10 text-[#00a9b5] rounded-lg font-bold text-lg">
-                VK
+              <div className=' w-12 h-12  flex justify-center items-center overflow-hidden '>
+                  <img src="../../public/logo.png" alt=""  />
               </div>
-              <span className={`font-bold text-xl text-gray-900 tracking-tight whitespace-nowrap transition-opacity duration-200
+              
+              <span className={`font-semibold text-xl text-gray-900 tracking-tight whitespace-nowrap transition-opacity duration-200
                 ${isCollapsed ? 'md:opacity-0 md:w-0 md:pointer-events-none' : 'opacity-100'}
               `}>
-                Company
+                SwiftPOS Pro
               </span>
             </div>
 
@@ -105,9 +111,9 @@ export const Sidebar: React.FC = () => {
                   key={index}
                   to={item.href}
                   onClick={() => setIsMobileOpen(false)} // Closes menu on mobile selection
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl  text-sm transition-all duration-200 group relative
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-full  text-sm transition-all duration-200 group relative
                     ${isActive 
-                      ? 'bg-[#00a9b5] text-white font-semibold' 
+                      ? 'bg-primary text-white font-semibold' 
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }
                   `}
@@ -164,11 +170,19 @@ export const Sidebar: React.FC = () => {
           <div className="flex flex-col gap-1.5 border-t border-gray-100 pt-4">
             
             {!isCollapsed && (
-              <div className=' flex p-2 gap-2 w-64' >
-                <img src={user?.picture} className=' rounded-3xl border-2 border-white shadow' alt="" width="48px"/>
+              <div className=' flex  p-2 gap-2 w-64' >
+                <img
+                  src={avatarSrc}
+                  className='rounded-3xl border-2 border-white shadow object-cover'
+                  alt={profileName}
+                  width="48"
+                  height="48"
+                  referrerPolicy="no-referrer"
+                  onError={() => setAvatarFailed(true)}
+                />
                 <div>
                   <p className=' text-sm font-semibold text-blue-500'>Manager</p>
-                  <p>{user?.name}</p>
+                  <p>{profileName}</p>
                 </div>
               </div>
             )}

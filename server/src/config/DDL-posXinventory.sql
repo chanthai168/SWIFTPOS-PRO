@@ -38,7 +38,7 @@ CREATE TABLE `audit_logs` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `audit_logs_ibfk_1` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE CASCADE,
   CONSTRAINT `audit_logs_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,11 +80,11 @@ CREATE TABLE `inventories` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `shop_id` (`shop_id`),
-  KEY `product_variant_id` (`product_variant_id`),
+  KEY `idx_inv_variant_shop` (`product_variant_id`,`shop_id`),
   CONSTRAINT `inventories_ibfk_1` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE CASCADE,
   CONSTRAINT `inventories_ibfk_2` FOREIGN KEY (`product_variant_id`) REFERENCES `product_variants` (`id`) ON DELETE CASCADE,
   CONSTRAINT `chk_variant_stock` CHECK (((`available_quantity` >= 0) and (`damaged_quantity` >= 0) and (`quantity_on_hand` >= 0)))
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `inventory_logs` (
   CONSTRAINT `inventory_logs_ibfk_1` FOREIGN KEY (`inventory_id`) REFERENCES `inventories` (`id`) ON DELETE CASCADE,
   CONSTRAINT `inventory_logs_ibfk_2` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE CASCADE,
   CONSTRAINT `inventory_logs_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,7 +134,7 @@ CREATE TABLE `order_items` (
   CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_variant_id`) REFERENCES `product_variants` (`id`) ON DELETE RESTRICT,
   CONSTRAINT `order_items_chk_1` CHECK ((`quantity` > 0)),
   CONSTRAINT `order_items_chk_2` CHECK ((`unit_price` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -166,7 +166,7 @@ CREATE TABLE `orders` (
   KEY `idx_order_status` (`status`),
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE CASCADE,
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`cashier_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -211,6 +211,50 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Temporary view structure for view `product_catalogv1_1`
+--
+
+DROP TABLE IF EXISTS `product_catalogv1_1`;
+/*!50001 DROP VIEW IF EXISTS `product_catalogv1_1`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `product_catalogv1_1` AS SELECT 
+ 1 AS `shop_id`,
+ 1 AS `product_id`,
+ 1 AS `name`,
+ 1 AS `description`,
+ 1 AS `is_active`,
+ 1 AS `deleted_at`,
+ 1 AS `category_id`,
+ 1 AS `category`,
+ 1 AS `category_des`,
+ 1 AS `variant_id`,
+ 1 AS `sku`,
+ 1 AS `variant_name`,
+ 1 AS `cost_price`,
+ 1 AS `selling_price`,
+ 1 AS `product_image_id`,
+ 1 AS `created_at`,
+ 1 AS `updated_at`,
+ 1 AS `var_deleted_at`,
+ 1 AS `var_is_active`,
+ 1 AS `image_id`,
+ 1 AS `image_url`,
+ 1 AS `file_name`,
+ 1 AS `file_size`,
+ 1 AS `mimetype`,
+ 1 AS `inventory_id`,
+ 1 AS `location`,
+ 1 AS `quantity_on_hand`,
+ 1 AS `available_quantity`,
+ 1 AS `damaged_quantity`,
+ 1 AS `low_stock_threshold`,
+ 1 AS `last_audited`,
+ 1 AS `inv_created_at`,
+ 1 AS `inv_updated_at`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `product_images`
 --
 
@@ -225,7 +269,7 @@ CREATE TABLE `product_images` (
   `mimetype` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,15 +290,21 @@ CREATE TABLE `product_variants` (
   `selling_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_active` tinyint(1) DEFAULT '1',
+  `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_sku_per_shop_variant` (`shop_id`,`sku`),
   KEY `product_id` (`product_id`),
   KEY `product_image_id` (`product_image_id`),
+  KEY `idx_variant_sku_shop` (`shop_id`,`sku`),
+  KEY `idx_variant_product_shop` (`shop_id`,`product_id`),
+  KEY `idx_variant_price` (`shop_id`,`selling_price`),
+  FULLTEXT KEY `ft_variant_search` (`variant_name`),
   CONSTRAINT `product_variants_ibfk_1` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE CASCADE,
   CONSTRAINT `product_variants_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   CONSTRAINT `product_variants_ibfk_3` FOREIGN KEY (`product_image_id`) REFERENCES `product_images` (`id`) ON DELETE SET NULL,
   CONSTRAINT `chk_variant_prices` CHECK (((`cost_price` >= 0) and (`selling_price` >= 0)))
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -279,9 +329,12 @@ CREATE TABLE `products` (
   UNIQUE KEY `sku` (`sku`),
   KEY `category_id` (`category_id`),
   KEY `idx_shop_sku` (`shop_id`,`sku`),
+  KEY `idx_product_category_active` (`shop_id`,`category_id`,`is_active`,`deleted_at`),
+  KEY `idx_product_shop_active_deleted` (`shop_id`,`is_active`,`deleted_at`),
+  FULLTEXT KEY `ft_product_search` (`name`,`description`),
   CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL,
   CONSTRAINT `products_ibfk_2` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -377,7 +430,7 @@ CREATE TABLE `purchase_order_items` (
   CONSTRAINT `purchase_order_items_ibfk_2` FOREIGN KEY (`product_variant_id`) REFERENCES `product_variants` (`id`) ON DELETE RESTRICT,
   CONSTRAINT `purchase_order_items_chk_1` CHECK ((`quantity` > 0)),
   CONSTRAINT `purchase_order_items_chk_2` CHECK ((`unit_cost` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -407,7 +460,7 @@ CREATE TABLE `purchase_orders` (
   CONSTRAINT `purchase_orders_ibfk_1` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE CASCADE,
   CONSTRAINT `purchase_orders_ibfk_2` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`) ON DELETE RESTRICT,
   CONSTRAINT `purchase_orders_ibfk_3` FOREIGN KEY (`created_by_user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -450,7 +503,7 @@ CREATE TABLE `suppliers` (
   PRIMARY KEY (`id`),
   KEY `shop_id` (`shop_id`),
   CONSTRAINT `suppliers_ibfk_1` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -489,6 +542,24 @@ CREATE TABLE `users` (
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `product_catalog` AS select `p`.`shop_id` AS `shop_id`,`p`.`id` AS `product_id`,`p`.`name` AS `name`,`p`.`description` AS `description`,`p`.`is_active` AS `is_active`,`cat`.`id` AS `category_id`,`cat`.`name` AS `category`,`cat`.`description` AS `category_des`,`img`.`id` AS `image_id`,`img`.`image_url` AS `image_url`,`img`.`file_name` AS `file_name`,`img`.`file_size` AS `file_size`,`img`.`mimetype` AS `mimetype`,`var`.`id` AS `variant_id`,`var`.`product_image_id` AS `product_image_id`,`var`.`sku` AS `sku`,`var`.`variant_name` AS `variant_name`,`var`.`cost_price` AS `cost_price`,`var`.`selling_price` AS `selling_price`,`var`.`created_at` AS `created_at`,`var`.`updated_at` AS `updated_at`,`inv`.`id` AS `inventory_id`,`inv`.`location` AS `location`,`inv`.`quantity_on_hand` AS `quantity_on_hand`,`inv`.`available_quantity` AS `available_quantity`,`inv`.`damaged_quantity` AS `damaged_quantity`,`inv`.`low_stock_threshold` AS `low_stock_threshold`,`inv`.`last_audited` AS `last_audited`,`inv`.`created_at` AS `inv_created_at`,`inv`.`updated_at` AS `inv_updated_at` from ((((`products` `p` join `categories` `cat` on((`p`.`category_id` = `cat`.`id`))) left join `product_variants` `var` on((`p`.`id` = `var`.`product_id`))) left join `product_images` `img` on((`var`.`product_image_id` = `img`.`id`))) join `inventories` `inv` on((`var`.`id` = `inv`.`product_variant_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `product_catalogv1_1`
+--
+
+/*!50001 DROP VIEW IF EXISTS `product_catalogv1_1`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `product_catalogv1_1` AS select `p`.`shop_id` AS `shop_id`,`p`.`id` AS `product_id`,`p`.`name` AS `name`,`p`.`description` AS `description`,`p`.`is_active` AS `is_active`,`p`.`deleted_at` AS `deleted_at`,`cat`.`id` AS `category_id`,`cat`.`name` AS `category`,`cat`.`description` AS `category_des`,`var`.`id` AS `variant_id`,`var`.`sku` AS `sku`,`var`.`variant_name` AS `variant_name`,`var`.`cost_price` AS `cost_price`,`var`.`selling_price` AS `selling_price`,`var`.`product_image_id` AS `product_image_id`,`var`.`created_at` AS `created_at`,`var`.`updated_at` AS `updated_at`,`var`.`deleted_at` AS `var_deleted_at`,`var`.`is_active` AS `var_is_active`,`img`.`id` AS `image_id`,`img`.`image_url` AS `image_url`,`img`.`file_name` AS `file_name`,`img`.`file_size` AS `file_size`,`img`.`mimetype` AS `mimetype`,`inv`.`id` AS `inventory_id`,`inv`.`location` AS `location`,`inv`.`quantity_on_hand` AS `quantity_on_hand`,`inv`.`available_quantity` AS `available_quantity`,`inv`.`damaged_quantity` AS `damaged_quantity`,`inv`.`low_stock_threshold` AS `low_stock_threshold`,`inv`.`last_audited` AS `last_audited`,`inv`.`created_at` AS `inv_created_at`,`inv`.`updated_at` AS `inv_updated_at` from ((((`products` `p` left join `categories` `cat` on((`p`.`category_id` = `cat`.`id`))) left join `product_variants` `var` on((`p`.`id` = `var`.`product_id`))) left join `product_images` `img` on((`var`.`product_image_id` = `img`.`id`))) left join `inventories` `inv` on((`var`.`id` = `inv`.`product_variant_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -538,4 +609,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-13 15:54:44
+-- Dump completed on 2026-07-08 10:23:19

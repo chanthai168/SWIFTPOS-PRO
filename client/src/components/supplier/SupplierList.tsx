@@ -121,19 +121,19 @@
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search suppliers..."
-                className="w-full rounded-xl bg-white pl-9 pr-3 py-2.5 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                className="w-full rounded-full border border-white bg-layer2 pl-9 pr-3 py-2.5 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
             />
             </div>
             <button
             onClick={openCreateModal}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/80"
             >
             <Plus size={16} />
             Add Supplier
             </button>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="overflow-hidden p-4 rounded-4xl border border-white bg-layer2 shadow-sm">
             <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
                 <tr>

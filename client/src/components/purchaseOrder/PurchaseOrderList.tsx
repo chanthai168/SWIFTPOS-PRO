@@ -160,7 +160,7 @@ const PurchaseOrderList: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+    <div className="max-w-7xl mx-auto  px-4 sm:px-6 lg:px-8 pb-10">
       <NotificationContainer notifications={notifications} />
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
@@ -171,8 +171,8 @@ const PurchaseOrderList: React.FC = () => {
               onClick={() => setStatusFilter(s)}
               className={`rounded-full px-3 py-1.5 text-xs font-medium ${
                 statusFilter === s
-                  ? 'bg-teal-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-primary text-white'
+                  : 'bg-gray-100 text-gray-600 border border-white hover:bg-gray-200'
               }`}
             >
               {s}
@@ -182,14 +182,14 @@ const PurchaseOrderList: React.FC = () => {
 
         <button
           onClick={openCreateModal}
-          className="inline-flex items-center justify-center gap-2 rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-primary  px-4 py-2 text-sm font-medium text-white hover:bg-primary/80"
         >
           <Plus size={16} />
           New Purchase Order
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-4xl p-4 border border-white bg-layer2 shadow-sm">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>

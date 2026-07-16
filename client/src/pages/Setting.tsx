@@ -1,14 +1,71 @@
-const Setting: React.FC = () => {
-    return(
-      <>
-      <div className="bg-layer2">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Setting</h1>
-          <p className="mt-1 text-sm text-gray-600">Manage your setting</p>
+import { useAuth0 } from "@auth0/auth0-react";
+import { useUser } from "../context/Context";
+import { Link } from "react-router-dom";
+import SaleAnalyticChart from "../components/dashboard/SaleAnalyticChart";
+import ItemsRanking from "../components/dashboard/ItemsRanking";
+import RecentActivity from "../components/dashboard/RecentActivity";
+function Setting() {
+  const {
+    isLoading, // Loading state, the SDK needs to reach Auth0 on load
+    isAuthenticated,
+    error,
+    loginWithRedirect: login, // Starts the login flow
+    logout: auth0Logout, // Starts the logout flow
+    user, // User profile
+  } = useAuth0();
+
+  const {userInfo,shop} = useUser();
+  
+
+  const signup = () =>
+    login({ authorizationParams: { screen_hint: "signup" } });
+
+  const logout = () =>
+    auth0Logout({ logoutParams: { returnTo: window.location.origin } });
+
+  if (isLoading) return "Loading...";
+
+  return isAuthenticated ? (
+    <>
+      <div className=" flex gap-4 p-4">
+        <div className=" w-[60%]">
+          <SaleAnalyticChart/>
+        </div>
+        <div className=" w-[40%]">
+          <ItemsRanking/>
         </div>
       </div>
-      </>
+      <RecentActivity/>
 
-    )
+      <p>Logged in as {user?.email}</p>
+
+      <h1>User Profile</h1>
+
+      <pre>{JSON.stringify(user, null, 2)}</pre>
+
+      <button onClick={logout}>Logout</button>
+
+      <div className=" text-xl bg-blue-100">
+        <p>{userInfo?.name}</p>
+        <p>{userInfo?.email}</p>
+        <p>{userInfo?.role}</p>
+
+        <p>shop name: {shop?.name}</p>
+        <p>shop id: {shop?.id}</p>
+      </div>
+      <br></br>
+      <Link to='/upload' className=" px-8 py-2 rounded-3xl bg-blue-600 text-white active:scale-125  ease-in-out">Upload product</Link>
+      <Link to='/inventory' className=" px-8 py-2 rounded-3xl bg-blue-600 text-white active:scale-125  ease-in-out">Inventory Catalog</Link>
+    </>
+  ) : (
+    <>
+      {error && <p>Error: {error.message}</p>}
+
+      <button onClick={signup}>Signup</button>
+
+      <button onClick={() => login()}>Login</button>
+    </>
+  );
 }
+
 export default Setting;

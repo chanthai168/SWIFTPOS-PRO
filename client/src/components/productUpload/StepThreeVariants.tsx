@@ -172,14 +172,14 @@ const Step3Variants: React.FC<Step3VariantsProps> = ({
       <div className="flex justify-between mt-8">
         <button
           onClick={onBack}
-          className="px-6 py-2 flex items-center border border-gray-300 text-gray-700 font-medium rounded-4xl hover:bg-gray-50"
+          className="px-6 py-2 flex items-center bg-gray-200 hover:scale-102 transition-all text-gray-700 font-medium rounded-4xl "
         >
           {angleIcon} Back
         </button>
         <button
           onClick={onSubmit}
           disabled={formData.variants.length === 0 || isLoading}
-          className="px-8 py-2 bg-green-600 text-white font-medium rounded-4xl hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+          className="px-8 py-2 bg-primary text-white font-medium rounded-xl hover:scale-102 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
         >
           {isLoading ? (
             <>

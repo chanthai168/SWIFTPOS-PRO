@@ -14,7 +14,8 @@ const Supplier: React.FC = () => {
 
     return(
       <>
-      <div className="bg-layer2">
+      <div className='bg-layer2'>
+      <div >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <h1 className="text-xl font-bold text-gray-900">Supply Chain</h1>
           <p className="mt-1 text-sm text-gray-600">Manage suppliers and purchase orders</p>
@@ -26,7 +27,7 @@ const Supplier: React.FC = () => {
                 onClick={() => setActiveTab(tab.key)}
                 className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px ${
                   activeTab === tab.key
-                    ? "border-teal-600 text-teal-600"
+                    ? "border-primary text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700"
                 }`}
               >
@@ -37,9 +38,10 @@ const Supplier: React.FC = () => {
         </div>
       </div>
 
-      <div className="pt-6">
+      <div className="pt-6 bg-layer1 min-h-150 rounded-t-4xl ">
         {activeTab === "suppliers" && <SupplierList />}
         {activeTab === "purchase-orders" && <PurchaseOrderList />}
+      </div>
       </div>
       </> 
     )

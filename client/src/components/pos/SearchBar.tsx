@@ -35,7 +35,7 @@ const SearchBar: React.FC<Props> = ({ value, onChange }) => {
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder="Search products, SKU, or variant…"
-        className="w-full pl-9 pr-9 py-2.5 bg-layer2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary transition-colors placeholder:text-gray-400"
+        className="w-full pl-9 pr-9 py-2.5 bg-gray-200 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-primary transition-colors placeholder:text-gray-400"
       />
       {value ? (
         <button

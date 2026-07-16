@@ -5,3 +5,4 @@ export const forcastingRouter = Router();
 forcastingRouter.use(checkJwt,attachUser);
 forcastingRouter.get('/low-stock-items',ForcastingController.getLowStockItems);
 forcastingRouter.get('/items-ranking',ForcastingController.getProductRanking);
+forcastingRouter.get('/sale-analytic',ForcastingController.getSaleAnalytic);

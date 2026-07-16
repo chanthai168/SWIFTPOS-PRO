@@ -1,350 +1,305 @@
-import { forcastingService } from "../../services/focastingService";
-import { useState, useEffect } from "react";
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
-import { 
-    XMarkIcon, 
-    ShoppingCartIcon, 
-    TrophyIcon,
-    ArrowPathIcon,
-    ClockIcon,
-    MapPinIcon,
-    TagIcon,
-    CurrencyDollarIcon,
-    CubeIcon,
-    ArrowTrendingUpIcon,
-    ArrowTrendingDownIcon,
-    BackwardIcon,
-    FireIcon,
-    StarIcon
-} from '@heroicons/react/24/outline';
-import { 
-    ChevronUpIcon,
-    ChevronDownIcon
-} from '@heroicons/react/24/solid';
+    import { forcastingService } from "../../services/focastingService";
+    import { useState, useEffect } from "react";
+    import { Dialog, Transition } from '@headlessui/react';
+    import { Fragment } from 'react';
+    import { 
+        XMarkIcon, 
+        ShoppingCartIcon, 
+        TrophyIcon,
+        ArrowPathIcon,
+        ClockIcon,
+        MapPinIcon,
+        TagIcon,
+        CurrencyDollarIcon,
+        CubeIcon,
+        ArrowTrendingUpIcon,
+        ArrowTrendingDownIcon,
+        BackwardIcon,
+        FireIcon,
+        StarIcon
+    } from '@heroicons/react/24/outline';
+    import { 
+        ChevronUpIcon,
+        ChevronDownIcon
+    } from '@heroicons/react/24/solid';
 
-interface BestSellingItem {
-    available_quantity: number;
-    avg_daily_sales: string;
-    category_name: string | null;
-    cost_price: string;
-    damaged_quantity: number;
-    image_created_at: string;
-    image_url: string;
-    inventory_id: number;
-    location: string;
-    low_stock_threshold: number;
-    product_id: number;
-    product_name: string;
-    quantity_on_hand: number;
-    sales_rank: number;
-    selling_price: string;
-    total_orders: number;
-    total_revenue: string;
-    total_units_sold: string;
-    variant_id: number;
-    variant_name: string;
-    variant_sku: string;
-}
-
-const resolveImageUrl = (imageUrl?: string) => {
-    if (!imageUrl) return '/placeholder-image.svg';
-
-    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-        return imageUrl;
+    interface BestSellingItem {
+        available_quantity: number;
+        avg_daily_sales: string;
+        category_name: string | null;
+        cost_price: string;
+        damaged_quantity: number;
+        image_created_at: string;
+        image_url: string;
+        inventory_id: number;
+        location: string;
+        low_stock_threshold: number;
+        product_id: number;
+        product_name: string;
+        quantity_on_hand: number;
+        sales_rank: number;
+        selling_price: string;
+        total_orders: number;
+        total_revenue: string;
+        total_units_sold: string;
+        variant_id: number;
+        variant_name: string;
+        variant_sku: string;
     }
 
-    const normalizedPath = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
-    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${normalizedPath}`;
-};
+    const resolveImageUrl = (imageUrl?: string) => {
+        if (!imageUrl) return '/placeholder-image.svg';
 
-const ItemsRanking: React.FC = () => {
-    const [items, setItems] = useState<BestSellingItem[]>([]);
-    const [errorMs, setErrorMs] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [selectedItem, setSelectedItem] = useState<BestSellingItem | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [timeFilter, setTimeFilter] = useState<'7days' | '30days' | '90days' | 'all'>('30days');
-
-    const getBestSellingItems = async () => {
-        try {
-            setLoading(true);
-            const res = await forcastingService.getProductRanking();
-            console.log(res);
-            setItems(res.data || res || []);
-            setErrorMs('');
-        } catch (error) {
-            console.log(error);
-            setErrorMs('Failed to load best selling items');
-        } finally {
-            setLoading(false);
+        if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+            return imageUrl;
         }
+
+        const normalizedPath = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+        return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${normalizedPath}`;
     };
 
-    useEffect(() => {
-        getBestSellingItems();
-    }, []);
+    const ItemsRanking: React.FC = () => {
+        const [items, setItems] = useState<BestSellingItem[]>([]);
+        const [errorMs, setErrorMs] = useState('');
+        const [loading, setLoading] = useState(true);
+        const [selectedItem, setSelectedItem] = useState<BestSellingItem | null>(null);
+        const [isModalOpen, setIsModalOpen] = useState(false);
+        const [timeFilter, setTimeFilter] = useState<'7days' | '30days' | '90days' | 'all'>('30days');
 
-    const openModal = (item: BestSellingItem) => {
-        setSelectedItem(item);
-        setIsModalOpen(true);
-    };
+        const getBestSellingItems = async () => {
+            try {
+                setLoading(true);
+                const res = await forcastingService.getProductRanking();
+                console.log(res);
+                setItems(res.data || res || []);
+                setErrorMs('');
+            } catch (error) {
+                console.log(error);
+                setErrorMs('Failed to load best selling items');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setSelectedItem(null);
-    };
+        useEffect(() => {
+            getBestSellingItems();
+        }, []);
 
-    const formatCurrency = (amount: string | number) => {
-        const num = typeof amount === 'string' ? parseFloat(amount) : amount;
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2
-        }).format(num || 0);
-    };
+        const openModal = (item: BestSellingItem) => {
+            setSelectedItem(item);
+            setIsModalOpen(true);
+        };
 
-    const formatNumber = (num: string | number) => {
-        const n = typeof num === 'string' ? parseFloat(num) : num;
-        return new Intl.NumberFormat('en-US').format(n || 0);
-    };
+        const closeModal = () => {
+            setIsModalOpen(false);
+            setSelectedItem(null);
+        };
 
-    const getRankIcon = (rank: number) => {
-        if (rank === 1) return <TrophyIcon className="w-6 h-6 text-yellow-500" />;
-        if (rank === 2) return <TrophyIcon className="w-6 h-6 text-gray-400" />;
-        if (rank === 3) return <TrophyIcon className="w-6 h-6 text-amber-600" />;
-        return <span className="text-sm font-bold text-gray-500">#{rank}</span>;
-    };
+        const formatCurrency = (amount: string | number) => {
+            const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(num || 0);
+        };
 
-    const getRankColor = (rank: number) => {
-        if (rank === 1) return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-        if (rank === 2) return 'bg-gray-100 text-gray-700 border-gray-200';
-        if (rank === 3) return 'bg-amber-100 text-amber-800 border-amber-200';
-        return 'bg-blue-50 text-blue-700 border-blue-200';
-    };
+        const formatNumber = (num: string | number) => {
+            const n = typeof num === 'string' ? parseFloat(num) : num;
+            return new Intl.NumberFormat('en-US').format(n || 0);
+        };
 
-    const getStockStatus = (available: number, threshold: number) => {
-        if (available === 0) return { label: 'Out of Stock', color: 'text-red-600', bg: 'bg-red-100' };
-        if (available < threshold) return { label: 'Low Stock', color: 'text-yellow-600', bg: 'bg-yellow-100' };
-        return { label: 'In Stock', color: 'text-green-600', bg: 'bg-green-100' };
-    };
+        const getRankIcon = (rank: number) => {
+            if (rank === 1) return <TrophyIcon className="w-6 h-6 text-yellow-500" />;
+            if (rank === 2) return <TrophyIcon className="w-6 h-6 text-gray-400" />;
+            if (rank === 3) return <TrophyIcon className="w-6 h-6 text-amber-600" />;
+            return <span className="text-sm font-bold text-gray-500">#{rank}</span>;
+        };
 
-    const getPerformanceLabel = (dailySales: number) => {
-        if (dailySales >= 5) return { label: 'Hot Seller', icon: <FireIcon className="w-4 h-4" />, color: 'text-red-600 bg-red-100' };
-        if (dailySales >= 2) return { label: 'Popular', icon: <StarIcon className="w-4 h-4" />, color: 'text-yellow-600 bg-yellow-100' };
-        if (dailySales >= 1) return { label: 'Steady', icon: <ArrowTrendingUpIcon className="w-4 h-4" />, color: 'text-blue-600 bg-blue-100' };
-        return { label: 'Slow', icon: <ArrowTrendingDownIcon className="w-4 h-4" />, color: 'text-gray-600 bg-gray-100' };
-    };
+        const getRankColor = (rank: number) => {
+            if (rank === 1) return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+            if (rank === 2) return 'bg-gray-100 text-gray-700 border-gray-200';
+            if (rank === 3) return 'bg-amber-100 text-amber-800 border-amber-200';
+            return 'bg-blue-50 text-blue-700 border-blue-200';
+        };
 
-    if (loading) {
-        return (
-            <div className="flex flex-col items-center justify-center h-96">
-                <div className="relative">
-                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200"></div>
-                    <div className="absolute top-0 left-0 h-16 w-16 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
-                </div>
-                <p className="mt-4 text-sm text-gray-500">Loading best sellers...</p>
-            </div>
-        );
-    }
+        const getStockStatus = (available: number, threshold: number) => {
+            if (available === 0) return { label: 'Out of Stock', color: 'text-red-600', bg: 'bg-red-100' };
+            if (available < threshold) return { label: 'Low Stock', color: 'text-yellow-600', bg: 'bg-yellow-100' };
+            return { label: 'In Stock', color: 'text-green-600', bg: 'bg-green-100' };
+        };
 
-    if (errorMs) {
-        return (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-                <div className="text-red-400 text-5xl mb-3">⚠️</div>
-                <p className="text-red-700 font-medium">{errorMs}</p>
-                <button 
-                    onClick={getBestSellingItems}
-                    className="mt-3 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
-                >
-                    Try Again
-                </button>
-            </div>
-        );
-    }
+        const getPerformanceLabel = (dailySales: number) => {
+            if (dailySales >= 5) return { label: 'Hot Seller', icon: <FireIcon className="w-4 h-4" />, color: 'text-red-600 bg-red-100' };
+            if (dailySales >= 2) return { label: 'Popular', icon: <StarIcon className="w-4 h-4" />, color: 'text-yellow-600 bg-yellow-100' };
+            if (dailySales >= 1) return { label: 'Steady', icon: <ArrowTrendingUpIcon className="w-4 h-4" />, color: 'text-blue-600 bg-blue-100' };
+            return { label: 'Slow', icon: <ArrowTrendingDownIcon className="w-4 h-4" />, color: 'text-gray-600 bg-gray-100' };
+        };
 
-    if (!items || items.length === 0) {
-        return (
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50 border border-gray-200 rounded-xl p-12 text-center">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
-                    <ShoppingCartIcon className="w-10 h-10 text-gray-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800">No Sales Data Yet</h3>
-                <p className="text-gray-600 mt-2">Start selling to see your best performing items</p>
-            </div>
-        );
-    }
-
-    return (
-        <div className="w-full bg-layer2 rounded-4xl border border-white overflow-hidden" style={{minHeight:'100%'}}>
-            {/* Header */}
-            <div className="bg-gradient-to-r  px-6 py-5">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <div className="flex items-center gap-3">
-
-                            <div>
-                                <h2 className="text-xl font-bold text-gray-700">Best Selling Items</h2>
-                                <p className="text-gray-600 text-sm mt-0.5">
-                                    {items.length} products ranked by sales
-                                </p>
-                            </div>
-                        </div>
+        if (loading) {
+            return (
+                <div className="flex flex-col items-center justify-center h-96">
+                    <div className="relative">
+                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200"></div>
+                        <div className="absolute top-0 left-0 h-16 w-16 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        {/* Time Filter */}
-                        <select
-                            value={timeFilter}
-                            onChange={(e) => setTimeFilter(e.target.value as any)}
-                            className="px-3 py-1.5 bg-white/20 text-white text-sm rounded-lg border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
-                        >
-                            <option value="7days" className="text-gray-800">Last 7 Days</option>
-                            <option value="30days" className="text-gray-800">Last 30 Days</option>
-                            <option value="90days" className="text-gray-800">Last 90 Days</option>
-                            <option value="all" className="text-gray-800">All Time</option>
-                        </select>
-                        <button
-                            onClick={getBestSellingItems}
-                            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-                            title="Refresh"
-                        >
-                            <ArrowPathIcon className="w-5 h-5 text-white" />
-                        </button>
+                    <p className="mt-4 text-sm text-gray-500">Loading best sellers...</p>
+                </div>
+            );
+        }
+
+        if (errorMs) {
+            return (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+                    <div className="text-red-400 text-5xl mb-3">⚠️</div>
+                    <p className="text-red-700 font-medium">{errorMs}</p>
+                    <button 
+                        onClick={getBestSellingItems}
+                        className="mt-3 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            );
+        }
+
+        if (!items || items.length === 0) {
+            return (
+                <div className="bg-gradient-to-br from-gray-50 to-blue-50 border border-gray-200 rounded-xl p-12 text-center">
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
+                        <ShoppingCartIcon className="w-10 h-10 text-gray-400" />
                     </div>
+                    <h3 className="text-xl font-semibold text-gray-800">No Sales Data Yet</h3>
+                    <p className="text-gray-600 mt-2">Start selling to see your best performing items</p>
                 </div>
-            </div>
+            );
+        }
 
-            {/* Stats Overview */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-6 py-4 bg-gray-50 border-b border-gray-200">
-                <div className="text-center">
-                    <p className="text-xs text-gray-500 uppercase tracking-wider">Total Items</p>
-                    <p className="text-lg font-bold text-gray-800">{items.length}</p>
-                </div>
-                <div className="text-center">
-                    <p className="text-xs text-gray-500 uppercase tracking-wider">Total Revenue</p>
-                    <p className="text-lg font-bold text-green-600">
-                        {formatCurrency(items.reduce((sum, item) => sum + parseFloat(item.total_revenue), 0))}
-                    </p>
-                </div>
-                <div className="text-center">
-                    <p className="text-xs text-gray-500 uppercase tracking-wider">Total Units Sold</p>
-                    <p className="text-lg font-bold text-gray-800">
-                        {formatNumber(items.reduce((sum, item) => sum + parseFloat(item.total_units_sold), 0))}
-                    </p>
-                </div>
-                <div className="text-center">
-                    <p className="text-xs text-gray-500 uppercase tracking-wider">Avg Daily Sales</p>
-                    <p className="text-lg font-bold text-blue-600">
-                        {formatNumber(items.reduce((sum, item) => sum + parseFloat(item.avg_daily_sales), 0) / items.length)}
-                    </p>
-                </div>
-            </div>
+        return (
+            <div className="w-full bg-layer2 p-2 border border-white rounded-4xl  overflow-y-scroll overflow-x-hidden" style={{height:'540px'}}>
+                {/* Header */}
+                <div className="bg-gradient-to-r  px-6 py-5">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <div className="flex items-center gap-3">
 
-            {/* Items List */}
-            <div className=" flex flex-col gap-4 p-4">
-                {items.map((item) => {
-                    const stockStatus = getStockStatus(item.available_quantity, item.low_stock_threshold);
-                    const performance = getPerformanceLabel(parseFloat(item.avg_daily_sales));
-                    const rankClass = getRankColor(item.sales_rank);
-                    
-                    return (
-                        <div
-                            key={item.variant_id}
-                            onClick={() => openModal(item)}
-                            className="group hover:bg-gray-50 hover:-translate-y-1 border border-gray-200 rounded-xl hover:scale-101 hover:shadow-md transition-all duration-200 cursor-pointer"
-                        >
-                            <div className="px-4 py-4 md:px-6">
-                                <div className="flex items-center gap-4">
-                                    {/* Rank */}
-
-                                    {/* Image */}
-                                    <div className="flex-shrink-0 group-hover:scale-110 transition-scale duration-300 w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden bg-gray-100">
-                                        {item.image_url ? (
-                                            <img
-                                                src={resolveImageUrl(item.image_url)}
-                                                alt={item.product_name}
-                                                className=" h-full object-cover"
-                                                onError={(e) => {
-                                                    (e.currentTarget as HTMLImageElement).src = '/placeholder-image.svg';
-                                                }}
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                                                <ShoppingCartIcon className="w-8 h-8 text-gray-400" />
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Info */}
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2">
-                                            <h3 className="font-semibold text-gray-800 text-sm md:text-base truncate">
-                                                {item.product_name}
-                                            </h3>
-                                            <span className={`flex  px-2 py-0.5 rounded-full text-xs font-medium ${performance.color}`}>
-                                                {performance.icon} {performance.label}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
-                                            <span className="text-xs text-gray-500">
-                                                {item.variant_name} • SKU: {item.variant_sku}
-                                            </span>
-                                            <span className="text-xs text-gray-400">
-                                                {item.category_name || 'Uncategorized'}
-                                            </span>
-                                        </div>
-                                        {/* <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5">
-                                            <span className="text-sm font-bold text-gray-800">
-                                                {formatCurrency(item.selling_price)}
-                                            </span>
-                                            <span className="text-xs text-gray-500">
-                                                Sold: {formatNumber(item.total_units_sold)} units
-                                            </span>
-                                            <span className="text-xs text-gray-500">
-                                                Revenue: {formatCurrency(item.total_revenue)}
-                                            </span>
-                                            <span className={`text-xs font-medium ${stockStatus.color}`}>
-                                                {stockStatus.label}: {item.available_quantity}
-                                            </span>
-                                        </div> */}
-                                    </div>
-
-                                    {/* Right Side Stats */}
-                                    <div className="hidden md:flex flex-col items-end gap-1">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs text-gray-500">Daily Sales:</span>
-                                            <span className="text-sm font-semibold text-blue-600">
-                                                {formatNumber(item.avg_daily_sales)}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs text-gray-500">Orders:</span>
-                                            <span className="text-sm font-semibold text-gray-800">
-                                                {item.total_orders}
-                                            </span>
-                                        </div>
-                                        <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                                            <div 
-                                                className="h-full bg-indigo-500 rounded-full transition-all duration-500"
-                                                style={{ 
-                                                    width: `${Math.min((parseFloat(item.total_units_sold) / Number(items[0]?.total_units_sold)) * 100, 100)}%` 
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Arrow indicator */}
-                                    <div className="flex-shrink-0 ml-2">
-                                        <ChevronUpIcon className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" />
-                                    </div>
+                                <div>
+                                    <h2 className="text-lg font-semibold text-gray-700">Best Selling Items</h2>
+                                    <p className="text-gray-600 text-sm mt-0.5">
+                                        {items.length} products ranked by sales
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                    );
-                })}
-            </div>
 
-            {/* Detail Modal */}
+                    </div>
+                </div>
+
+                {/* Items List */}
+                <div className=" flex flex-col gap-4 p-4">
+                    {items.map((item) => {
+                        const stockStatus = getStockStatus(item.available_quantity, item.low_stock_threshold);
+                        const performance = getPerformanceLabel(parseFloat(item.avg_daily_sales));
+                        const rankClass = getRankColor(item.sales_rank);
+                        
+                        return (
+                            <div
+                                key={item.variant_id}
+                                onClick={() => openModal(item)}
+                                className="group hover:bg-gray-50 hover:-translate-y-1 border border-gray-200 rounded-xl hover:scale-101 hover:shadow-md transition-all duration-200 cursor-pointer"
+                            >
+                                <div className="px-4 py-4 md:px-6">
+                                    <div className="flex items-center gap-4">
+                                        {/* Rank */}
+
+                                        {/* Image */}
+                                        <div className="flex-shrink-0 group-hover:scale-110 transition-scale duration-300 w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden bg-gray-100">
+                                            {item.image_url ? (
+                                                <img
+                                                    src={resolveImageUrl(item.image_url)}
+                                                    alt={item.product_name}
+                                                    className=" h-full object-cover"
+                                                    onError={(e) => {
+                                                        (e.currentTarget as HTMLImageElement).src = '/placeholder-image.svg';
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                                                    <ShoppingCartIcon className="w-8 h-8 text-gray-400" />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Info */}
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="font-semibold text-gray-800 text-sm md:text-base truncate">
+                                                    {item.product_name}
+                                                </h3>
+                                                <span className={`flex  px-2 py-0.5 rounded-full text-xs font-medium ${performance.color}`}>
+                                                    {performance.icon} {performance.label}
+                                                </span>
+                                            </div>
+                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
+                                                <span className="text-xs text-gray-500">
+                                                    {item.variant_name} • SKU: {item.variant_sku}
+                                                </span>
+                                                <span className="text-xs text-gray-400">
+                                                    {item.category_name || 'Uncategorized'}
+                                                </span>
+                                            </div>
+                                            {/* <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5">
+                                                <span className="text-sm font-bold text-gray-800">
+                                                    {formatCurrency(item.selling_price)}
+                                                </span>
+                                                <span className="text-xs text-gray-500">
+                                                    Sold: {formatNumber(item.total_units_sold)} units
+                                                </span>
+                                                <span className="text-xs text-gray-500">
+                                                    Revenue: {formatCurrency(item.total_revenue)}
+                                                </span>
+                                                <span className={`text-xs font-medium ${stockStatus.color}`}>
+                                                    {stockStatus.label}: {item.available_quantity}
+                                                </span>
+                                            </div> */}
+                                        </div>
+
+                                        {/* Right Side Stats */}
+                                        <div className="hidden md:flex flex-col items-end gap-1">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs text-gray-500">Daily Sales:</span>
+                                                <span className="text-sm font-semibold text-blue-600">
+                                                    {formatNumber(item.avg_daily_sales)}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs text-gray-500">Orders:</span>
+                                                <span className="text-sm font-semibold text-gray-800">
+                                                    {item.total_orders}
+                                                </span>
+                                            </div>
+                                            <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                                <div 
+                                                    className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                                                    style={{ 
+                                                        width: `${Math.min((parseFloat(item.total_units_sold) / Number(items[0]?.total_units_sold)) * 100, 100)}%` 
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Arrow indicator */}
+                                        <div className="flex-shrink-0 ml-2">
+                                            <ChevronUpIcon className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Detail Modal */}
                 <Transition
                     appear
                     show={isModalOpen}
@@ -566,8 +521,8 @@ const ItemsRanking: React.FC = () => {
                         </div>
                     </Dialog>
                 </Transition>
-        </div>
-    );
-};
+            </div>
+        );
+    };
 
-export default ItemsRanking;
+    export default ItemsRanking;

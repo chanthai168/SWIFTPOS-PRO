@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 body{
-    background-color: rgb(223, 229, 230);
+    background-color: #dedcdcd7;
     color:rgb(19, 19, 19);
 }
 *{
@@ -26,12 +26,12 @@ body{
   from { width: 100%; }
   to   { width: 0%; }
 }
-
+/* --color-primary:#06ADB2; */
 @theme {
     --color-layer1:#dedcdcd7;
     --color-layer2:#ffffffd1;
     --color-layer3:#EFEFEF;
-    --color-primary:#06ADB2;
+    --color-primary:oklch(54.6% 0.245 262.881);
     --color-secondary:#D2D0D0;
     --color-indacator:#08C127;
 

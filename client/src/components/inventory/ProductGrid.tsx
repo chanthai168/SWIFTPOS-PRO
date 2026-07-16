@@ -4,9 +4,16 @@ import { productService } from "../../services/productServices";
 import { useUser } from "../../context/Context";
 import type { ProductDetailResponseDTO,ProductVariantResponseDTO } from "../../types/product";
 import ProductDetailModal from "./ProductDetailModel";
+import { SearchIcon } from "lucide-react";
 interface ProductGridProp{
   fetchMetadata:()=>any
 }
+
+const searchIcon = <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+	<path d="M0 0h24v24H0z" fill="none" />
+	<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m21 21l-4.343-4.343m0 0A8 8 0 1 0 5.343 5.343a8 8 0 0 0 11.314 11.314" />
+</svg>
+;
 
 const ProductGrid: React.FC<ProductGridProp> = ({fetchMetadata}) => {
   const [data, setData] = useState<ProductDetailResponseDTO[]>([]);
@@ -131,22 +138,36 @@ const ProductGrid: React.FC<ProductGridProp> = ({fetchMetadata}) => {
   }
 
   return (
-    <div className="min-h-screen bg-layer2 rounded-md mx-4 ">
+    <div className="min-h-screen bg-layer2 rounded-4xl border  border-white mx-4 ">
 
       {/* Filters */}
       <div className="  sm:px-6  lg:px-8 py-6">
         <div className="rounded-lg p-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
+          <div className="flex flex-col items-center justify-between md:flex-row gap-4">
+
+            <div className=" w-128 overflow-scroll overflow-y-hidden flex gap-2 l scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {categories.map(category => (
+                <button className={`${selectedCategory == category ? ' bg-primary text-white':"bg-gray-200"} text-xs px-2 py-2 rounded-full`}
+                key={category} onClick={(e) => setSelectedCategory(category)}>
+                  {category === "all" ? "All Categories" : category}
+                </button>
+              ))}
+            </div>
+            
+            <div className="w-128 flex items-center bg-gray-200 px-4 rounded-full gap-1 ">
+              {searchIcon}
               <input
                 type="text"
                 placeholder="Search by product name or SKU..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 focus:outline-none  focus:border-none rounded-full "
               />
             </div>
-            <div className=" flex gap-4">
+
+
+
+            {/* <div className=" flex gap-4">
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -158,7 +179,7 @@ const ProductGrid: React.FC<ProductGridProp> = ({fetchMetadata}) => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -170,15 +191,15 @@ const ProductGrid: React.FC<ProductGridProp> = ({fetchMetadata}) => {
             <p className="text-gray-500">No products found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
                 onClick={() => handleProductClick(product)}
-                className=" rounded-lg  hover:scale-102  transition-all duration-200 ease-in-out cursor-pointer overflow-hidden"
+                className="group rounded-lg  hover:scale-101  transition-all duration-200 ease-in-out cursor-pointer overflow-hidden"
               >
                 {/* Product Image */}
-                <div className="h-48 bg-gray-100 relative flex items-center justify-center rounded-lg">
+                <div className="h-36 p-4 bg-gray-100 relative flex items-center justify-center rounded-lg group-hover:scale-105 transition-all duration-300">
                   {product.variants[0]?.image ? (
                     <img
                       src={product.variants[0].image.image_url}
@@ -216,11 +237,16 @@ const ProductGrid: React.FC<ProductGridProp> = ({fetchMetadata}) => {
                   <div className="mt-3 space-y-2">
                     {product.variants.slice(0, 1).map((variant) => (
                       <div key={variant.id} className="flex justify-between items-center text-sm">
-                        <span className="text-gray-600">{variant.variant_name}</span>
-                        <div className="flex items-center gap-2">
+                        <div className=" flex flex-col">
+                          <span className="text-gray-600">{variant.variant_name}</span>
+
                           <span className="font-semibold text-gray-900">
                             ${variant.selling_price.toFixed(2)}
                           </span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+
                           
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStockColor(variant)}`}>
                             {getStockStatus(variant)}

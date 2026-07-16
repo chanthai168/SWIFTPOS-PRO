@@ -1,4 +1,5 @@
 import { UnauthorizedError } from '../utils/appError.js'
+import type { SaleAnalyticResult } from '../repositories/forcasting.repo.js';
 
 import { UserService } from "./user.service.js";
 import { ForcastingRepo } from '../repositories/forcasting.repo.js';
@@ -18,6 +19,15 @@ export class ForcastingService{
             throw new UnauthorizedError("access denied");
         }
         const results = await ForcastingRepo.getProductRanking(user.shop?.id);
+        return results;
+    }
+
+    static async getSaleAnalytic(auth0Id:string | undefined):Promise<SaleAnalyticResult>{
+        const user = await UserService.getMe(auth0Id);
+        if(!user.shop?.id || !auth0Id){
+            throw new UnauthorizedError("access denied");
+        }
+        const results = await ForcastingRepo.getSaleAnalytic(user.shop?.id);
         return results;
     }
 }
