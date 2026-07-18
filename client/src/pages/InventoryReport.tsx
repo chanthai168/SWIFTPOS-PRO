@@ -5,7 +5,7 @@ const InventoryReport: React.FC = () => {
     return(
       <>
       
-      <div className=" bg-layer2">
+      <div className=" bg-layer2 my-page-scroll-container overflow-y-auto h-screen">
       <div className=" flex justify-between px-4 py-2 items-center ">
         <div className="max-w-7xl  py-2">
           <h1 className="text-xl font-bold text-gray-900">Report and Forcasting</h1>

@@ -27,15 +27,8 @@ function Setting() {
 
   return isAuthenticated ? (
     <>
-      <div className=" flex gap-4 p-4">
-        <div className=" w-[60%]">
-          <SaleAnalyticChart/>
-        </div>
-        <div className=" w-[40%]">
-          <ItemsRanking/>
-        </div>
-      </div>
-      <RecentActivity/>
+
+      
 
       <p>Logged in as {user?.email}</p>
 

@@ -141,7 +141,7 @@ const ProductGrid: React.FC<ProductGridProp> = ({fetchMetadata}) => {
     <div className="min-h-screen bg-layer2 rounded-4xl border  border-white mx-4 ">
 
       {/* Filters */}
-      <div className="  sm:px-6  lg:px-8 py-6">
+      <div className="  sm:px-4  lg:px-4 py-4">
         <div className="rounded-lg p-4">
           <div className="flex flex-col items-center justify-between md:flex-row gap-4">
 

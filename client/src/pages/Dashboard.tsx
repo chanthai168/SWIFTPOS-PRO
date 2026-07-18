@@ -63,9 +63,9 @@ function Dashboard() {
 
   return (
     <>
-    <div className=" bg-layer2">
+    <div className=" bg-layer2 my-page-scroll-container overflow-y-auto h-screen">
         <div className=" p-4 ">
-          <h2 className=" text-2xl font-bold">Hello {userInfo?.name} !</h2>
+          <h2 className=" text-2xl font-bold">Hello {userInfo?.name}!</h2>
           <p>Here's your overview for today.</p>
         </div>
 
@@ -78,12 +78,18 @@ function Dashboard() {
                 <div className="flex justify-center items-center rounded-full w-12 h-12 bg-amber-100 text-amber-500">
                   {moneyIcon}
                 </div>
-                <p className="text-lg font-semibold text-gray-600">Revenue</p>
+                <div className=" flex flex-col">
+                  <p className="text-lg font-semibold text-gray-600">Revenue</p>
+                                <div className=" flex items-center justify-end">
+                  <div className=" text-xs inline text-gray-500 bg-layer3 px-2 py-1 rounded-full">For the last 30 days</div>
+                </div>
+                </div>
               </div>
               <div className="flex justify-between pl-2 items-center mt-4">
                 <p className="text-2xl font-medium text-gray-600">${data?.revenue}</p>
                
               </div>
+
             </div>
           </div>
 
@@ -111,12 +117,19 @@ function Dashboard() {
                 <div className="flex justify-center items-center rounded-full w-12 h-12 bg-lime-100 text-lime-500">
                   {orderIcon}
                 </div>
-                <p className="text-lg font-semibold text-gray-600">Total order</p>
+                <div className=" flex flex-col">
+                  <p className="text-lg font-semibold text-gray-600">Total order</p>
+                  <div className=" flex items-center ">
+                    <div className=" text-xs inline text-gray-500 bg-layer3 px-2 py-1 rounded-full">For today.</div>
+                  </div>
+                </div>
               </div>
               <div className="flex justify-between pl-2 items-center mt-4">
                 <p className="text-2xl font-medium text-gray-600">{data?.totalOrder}</p>
                 <p className="font-semibold text-gray-500">order</p>
               </div>
+
+
             </div>
           </div>
 

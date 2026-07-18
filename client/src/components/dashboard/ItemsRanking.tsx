@@ -92,7 +92,6 @@
 
         const closeModal = () => {
             setIsModalOpen(false);
-            setSelectedItem(null);
         };
 
         const formatCurrency = (amount: string | number) => {
@@ -130,11 +129,13 @@
         };
 
         const getPerformanceLabel = (dailySales: number) => {
-            if (dailySales >= 5) return { label: 'Hot Seller', icon: <FireIcon className="w-4 h-4" />, color: 'text-red-600 bg-red-100' };
+            if (dailySales >= 5) return { label: 'Hot ', icon: <FireIcon className="w-4 h-4" />, color: 'text-red-600 bg-red-100' };
             if (dailySales >= 2) return { label: 'Popular', icon: <StarIcon className="w-4 h-4" />, color: 'text-yellow-600 bg-yellow-100' };
             if (dailySales >= 1) return { label: 'Steady', icon: <ArrowTrendingUpIcon className="w-4 h-4" />, color: 'text-blue-600 bg-blue-100' };
             return { label: 'Slow', icon: <ArrowTrendingDownIcon className="w-4 h-4" />, color: 'text-gray-600 bg-gray-100' };
         };
+
+
 
         if (loading) {
             return (
@@ -327,10 +328,10 @@
                                     enterFrom="opacity-0 scale-95 translate-4"
                                     enterTo="opacity-85 scale-100 translate-0"
                                     leave="ease-in duration-200"
-                                    leaveFrom="opacity-85 scale-100"
-                                    leaveTo="opacity-0 scale-95"
+                                    leaveFrom="opacity-85 scale-100 "
+                                    leaveTo="opacity-0 scale-90"
                                 >
-                                    <Dialog.Panel className="w-full max-w-3xl border-white transform overflow-hidden opacity-85  rounded-4xl bg-white shadow-2xl transition-all">
+                                    <Dialog.Panel className="w-full max-w-3xl border-white  transform overflow-hidden   rounded-4xl bg-white opacity-80 shadow-2xl transition-all">
                                         {selectedItem && (
                                             <>
                                             <div className=" p-2 ">

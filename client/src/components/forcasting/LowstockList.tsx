@@ -79,7 +79,6 @@ const LowStockList: React.FC = () => {
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setSelectedItem(null);
     };
 
     const formatCurrency = (amount: string | number) => {

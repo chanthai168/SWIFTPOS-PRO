@@ -236,7 +236,7 @@ function HistoryRow({
   badgeClass: string;
 }) {
   return (
-    <div className="flex items-center gap-4 bg-white rounded-xl px-4 py-3 border border-gray-50 hover:shadow-sm transition-shadow">
+    <div className="flex items-center gap-4 bg-layer3 rounded-xl px-4 py-3 border border-gray-50 hover:shadow-sm transition-shadow">
       <div className="w-10 h-10 rounded-lg bg-yellow-50 flex items-center justify-center flex-shrink-0">
         {icon}
       </div>

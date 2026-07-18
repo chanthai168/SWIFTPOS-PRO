@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Pencil, Check, X, Edit, VanIcon } from 'lucide-react';
-import { Transition } from '@headlessui/react';
+import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import ProductVariantList from './ProductVariantList';
 import type { VariantEdit } from './ProductVariantList';
@@ -24,6 +24,7 @@ interface ProductDetailModalProps {
   onClose: () => void;
   getStockStatus: (variant: ProductVariantResponseDTO) => string;
   getStockColor: (variant: ProductVariantResponseDTO) => string;
+  
   setData:React.Dispatch<React.SetStateAction<ProductDetailResponseDTO[]>>;
   reFetch:()=> any;
   fetchMetadata:()=>any;
@@ -36,7 +37,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   getStockColor,
   setData,
   reFetch,
-  fetchMetadata
+  fetchMetadata,
+  
 }) => {
 
 
@@ -304,259 +306,212 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   return (
-    <Transition
-      appear
-      show={isOpen}
+<Transition appear show={isOpen} as={Fragment}>
+  <Dialog as="div" className="relative z-50" onClose={handleClose}>
+    {/* Backdrop */}
+    <Transition.Child
       as={Fragment}
+      enter="ease-out duration-300"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
+      leave="ease-in duration-200"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
     >
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        {/* Backdrop */}
+      <div className="fixed inset-0 backdrop-blur-sm bg-black/20" />
+    </Transition.Child>
+
+    {/* Modal Container */}
+    <div className="fixed inset-0 overflow-y-auto">
+      <div className="flex min-h-full items-center justify-center p-4">
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
+          enterFrom="opacity-0 scale-95 translate-y-4"
+          enterTo="opacity-85 scale-100 translate-y-0"
           leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+          leaveFrom="opacity-85 scale-100 translate-y-0"
+          leaveTo="opacity-0 scale-95 translate-y-4"
         >
-          <div className="fixed inset-0 backdrop-blur-sm bg-black/20" />
-        </Transition.Child>
+          <Dialog.Panel className="relative bg-white opacity-85 rounded-4xl shadow-2xl border border-gray-100 max-w-4xl w-full max-h-[90vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            {/* notification */}
+            <NotificationContainer notifications={notifications} />
 
-        {/* Modal */}
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0 scale-95"
-          enterTo="opacity-90 scale-100"
-          leave="ease-in duration-100"
-          leaveFrom="opacity-90 scale-100"
-          leaveTo="opacity-0 scale-95"
-        >
-          <div className="relative bg-white opacity-90 rounded-4xl shadow-2xl border border-gray-100 max-w-4xl w-full max-h-[90vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className='border border-white'>
+              {/* ── Sticky Header ── */}
+              <div className="sticky top-0 bg-white border-b-4 border-primary px-6 py-4 flex justify-between items-center z-10">
+                  <Dialog.Title className="text-2xl font-bold text-gray-900">
+                    {selectedProduct.name}
+                  </Dialog.Title>
 
-      {/* notification*/}
-      <NotificationContainer notifications={notifications} />
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {/* Edit / Confirm / Cancel product */}
+                  {isEditingProduct ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleDeleteEntireProduct}
+                        className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold bg-red-600 text-white rounded-2xl hover:scale-104 transition"
+                      >
+                        {deleteIcon}Delete
+                      </button>
+                      <button
+                        type="button"
+                        onClick={saveUpdate}
+                        className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-2xl hover:scale-104 transition"
+                      >
+                        <Check size={15} /> Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={cancelEditProduct}
+                        className="flex items-center gap-1 px-3 py-1.5 bg-gray-200 text-sm font-semibold rounded-2xl hover:scale-104 transition"
+                      >
+                        <X size={15} /> Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={startEditProduct}
+                      className="flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-200 font-semibold text-gray-600 rounded-2xl hover:scale-104 transition"
+                    >
+                      <Pencil size={14} /> Edit
+                    </button>
+                  )}
 
-      <div className=' border border-white'>
-        {/* ── Sticky Header ── */}
-        <div className="sticky top-0 bg-white border-b-4 border-primary px-6 py-4 flex justify-between items-center z-10">
-          {isEditingProduct ? (
-            <input
-              value={productEdits?.name ?? ''}
-              onChange={(e) =>
-                setProductEdits((prev) => prev ? { ...prev, name: e.target.value } : prev)
-              }
-              className="text-2xl font-bold text-gray-900 border-b-2focus:outline-none bg-transparent w-full mr-4"
-            />
-          ) : (
-            <h2 className="text-2xl font-bold text-gray-900">{selectedProduct.name}</h2>
-          )}
-
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Edit / Confirm / Cancel product */}
-            {isEditingProduct ? (
-              <>
-                <button
-                  type="button"
-                  onClick={handleDeleteEntireProduct}
-                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold bg-red-600 text-white rounded-2xl hover:scale-104 transition"
-                >
-                  {deleteIcon}Delete
-                </button>
-                <button
-                  type="button"
-                  onClick={saveUpdate}
-                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-2xl hover:scale-104 transition"
-                >
-                  <Check size={15} /> Save
-                </button>
-                <button
-                  type="button"
-                  onClick={cancelEditProduct}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-gray-200 text-sm font-semibold   rounded-2xl hover:scale-104 transition"
-                >
-                  <X size={15} /> Cancel
-                </button>
-              </>
-            ) : (
-              <button
-                type="button"
-                onClick={startEditProduct}
-                className="flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-200 font-semibold  text-gray-600 rounded-2xl hover:scale-104 transition"
-              >
-                <Pencil size={14} /> Edit
-              </button>
-            )}
-
-            {/* Close */}
-            <button type="button" onClick={handleClose} className="text-gray-500 hover:text-gray-700 ml-1 transition-colors">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div className="p-6">
-
-          {/* ── Product Details ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-
-            {/* Image */}
-            <div className="flex justify-center items-center bg-gray-100 rounded-4xl">
-              {activeVariant?.image ? (
-                <img
-                  src={activeVariant?.image?.image_url}
-                  alt={activeVariant.variant_name}
-                  className="h-68 object-cover rounded-lg"
-                />
-              ) : (
-                <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+                  {/* Close */}
+                  <button 
+                    type="button" 
+                    onClick={handleClose} 
+                    className="text-gray-500 hover:text-gray-700 ml-1 transition-colors"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Info fields */}
-            <div>
-                {!true ? (
-                    <div>
+              <div className="p-6">
+                {/* ── Product Details ── */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  {/* Image */}
+                  <div className="flex justify-center items-center bg-gray-100 rounded-4xl">
+                    {activeVariant?.image ? (
+                      <img
+                        src={activeVariant?.image?.image_url}
+                        alt={activeVariant.variant_name}
+                        className="h-68 object-cover rounded-lg"
+                      />
+                    ) : (
+                      <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Info fields */}
+                  <div>
+                    {!true ? (
+                      <div>
                         <p>Category Editable</p>
-                    </div>
-                ):(
-                    <div className="mb-4">
+                      </div>
+                    ) : (
+                      <div className="mb-4">
                         <p className="text-sm text-gray-500">Category</p>
                         <p className="font-medium">{selectedProduct.category.name}</p>
+                      </div>
+                    )}
+
+                    <div className="mb-4">
+                      <p className="text-sm text-gray-500">{productEdits ? "Product Name" : "SKU"}</p>
+                      {isEditingProduct ? (
+                        <input
+                          value={productEdits?.name ?? ''}
+                          onChange={(e) =>
+                            setProductEdits((prev) => prev ? { ...prev, name: e.target.value } : prev)
+                          }
+                          className="w-full px-3 py-1.5 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                        />
+                      ) : (
+                        <p className="font-medium">{selectedProduct.variants[0]?.sku}</p>
+                      )}
                     </div>
-                )}
 
+                    <div className="mb-4">
+                      <p className="text-sm text-gray-500">Description</p>
+                      {isEditingProduct ? (
+                        <textarea
+                          rows={3}
+                          value={productEdits?.description ?? ''}
+                          onChange={(e) =>
+                            setProductEdits((prev) => prev ? { ...prev, description: e.target.value } : prev)
+                          }
+                          className="w-full px-3 py-1.5 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                        />
+                      ) : (
+                        <p className="text-gray-700">{selectedProduct.description}</p>
+                      )}
+                    </div>
 
-              <div className="mb-4">
-                <p className="text-sm text-gray-500">{productEdits ? "Product Name":"SKU"}</p>
-                {isEditingProduct ? (
-                  <input
-                    value={productEdits?.name ?? ''}
-                    onChange={(e) =>
-                      setProductEdits((prev) => prev ? { ...prev, name: e.target.value } : prev)
-                    }
-                    className="w-full px-3 py-1.5 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                    <div className="mb-4">
+                      <p className="text-sm text-gray-500">Status</p>
+                      {isEditingProduct ? (
+                        <label className="flex items-center gap-2 cursor-pointer mt-1">
+                          <input
+                            type="checkbox"
+                            checked={productEdits?.is_active ?? true}
+                            onChange={(e) =>
+                              setProductEdits((prev) =>
+                                prev ? { ...prev, is_active: e.target.checked } : prev
+                              )
+                            }
+                            className="w-4 h-4 accent-blue-600"
+                          />
+                          <span className="text-sm font-medium text-gray-700">Active</span>
+                        </label>
+                      ) : (
+                        <span
+                          className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                            selectedProduct.is_active
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-red-100 text-red-800'
+                          }`}
+                        >
+                          {selectedProduct.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-gray-500">Created</p>
+                      <p className="text-sm">{new Date(selectedProduct.created_at).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Variants – editable via ProductVariantList ── */}
+                <div>
+                  <ProductVariantList
+                    variants={listVariants}
+                    onVariantChange={handleVariantChange}
+                    onDelete={(id) => handleDeleteVariant(id)}
+                    isEditingProduct={isEditingProduct}
+                    setActiveId={setActiveId}
+                    activeId={activeId}
                   />
-                ) : (
-                  <p className="font-medium">{selectedProduct.variants[0]?.sku}</p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <p className="text-sm text-gray-500">Description</p>
-                {isEditingProduct ? (
-                  <textarea
-                    rows={3}
-                    value={productEdits?.description ?? ''}
-                    onChange={(e) =>
-                      setProductEdits((prev) => prev ? { ...prev, description: e.target.value } : prev)
-                    }
-                    className="w-full px-3 py-1.5 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                  />
-                ) : (
-                  <p className="text-gray-700">{selectedProduct.description}</p>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <p className="text-sm text-gray-500">Status</p>
-                {isEditingProduct ? (
-                  <label className="flex items-center gap-2 cursor-pointer mt-1">
-                    <input
-                      type="checkbox"
-                      checked={productEdits?.is_active ?? true}
-                      onChange={(e) =>
-                        setProductEdits((prev) =>
-                          prev ? { ...prev, is_active: e.target.checked } : prev
-                        )
-                      }
-                      className="w-4 h-4 accent-blue-600"
-                    />
-                    <span className="text-sm font-medium text-gray-700">Active</span>
-                  </label>
-                ) : (
-                  <span
-                    className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-                      selectedProduct.is_active
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    {selectedProduct.is_active ? 'Active' : 'Inactive'}
-                  </span>
-                )}
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Created</p>
-                <p className="text-sm">{new Date(selectedProduct.created_at).toLocaleDateString()}</p>
+                </div>
               </div>
             </div>
-          </div>
-          {/* ── Inventory summary (first variant, read-only) ── */}
-          {/* {activeVariant && activeVariant.inventory && (
-            // <div className="mt-6">
-            //   <h3 className="text-xl font-semibold mb-4">Inventory Details</h3>
-            //   <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
-            //     <div className="bg-gray-100 p-4 rounded-lg">
-            //       <p className="text-sm text-gray-500">Available Quantity</p>
-            //       <p className="font-medium text-2xl text-green-500">{activeVariant.inventory.available_quantity}</p>
-            //     </div>
-            //     <div className="bg-gray-100 p-4 rounded-lg">
-            //       <p className="text-sm text-gray-500">Damaged Quantity</p>
-            //       <p className="font-medium text-2xl">{activeVariant.inventory.damaged_quantity}</p>
-            //     </div>
-            //     <div className="bg-gray-100 p-4 rounded-lg">
-            //       <p className="text-sm text-gray-500">Threshold</p>
-            //       <p className="font-medium text-2xl">{activeVariant.inventory.low_stock_threshold}</p>
-            //     </div>
-            //     <div className="bg-gray-100 p-4 rounded-lg col-span-3 md:col-span-2 h-24 overflow-auto">
-            //       <p className="text-sm text-gray-500">Location</p>
-            //       <p className="font-medium ">{activeVariant.inventory.location}</p>
-            //     </div>
-            //   </div>
-            // </div>
-          )} */}
-
-          {/* ── Variants – editable via ProductVariantList ── */}
-          <div>
-            
-            <ProductVariantList
-              variants={listVariants}
-              onVariantChange={handleVariantChange}
-              onDelete={(id) => handleDeleteVariant(id)}
-              isEditingProduct={isEditingProduct}
-              setActiveId={setActiveId}
-              activeId={activeId}
-            />
-          </div>
-
-
-          {/* ── Submit all edits button (shown only when there are pending edits) ── */}
-          {/* {(isEditingProduct ) && (
-            <div className="mt-8 flex justify-end">
-              <button
-                onClick={handleVariantUpdate}
-                className="px-6 py-2 bg-primary text-white font-semibold rounded-xl hover:scale-103 transition"
-              >
-                Submit All Changes
-              </button>
-            </div>
-          )} */}
-
-        </div>
-      </div>
-        </div>
+          </Dialog.Panel>
         </Transition.Child>
       </div>
-    </Transition>
+    </div>
+  </Dialog>
+</Transition>
   );
 };
 

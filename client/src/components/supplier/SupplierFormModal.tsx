@@ -75,13 +75,13 @@
 
     return (
         <div
-        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/20 px-4 backdrop-blur-sm transition-opacity duration-300 ease-out ${
-            isVisible && !isClosing ? 'opacity-100' : 'opacity-0'
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm transition-opacity duration-300 ease-out ${
+            isVisible && !isClosing ? 'opacity-100 ' : 'opacity-0'
         }`}
         >
         <div
             className={`w-full max-w-lg rounded-4xl border-white border bg-white opacity-80 shadow-xl transition-all duration-300 ease-out ${
-            isVisible && !isClosing ? 'translate-y-0 scale-100 opacity-80' : '-translate-y-4 scale-95 opacity-0'
+            isVisible && !isClosing ? 'translate-y-0 scale-100 ' : '-translate-y-4 scale-80 opacity-0'
             }`}
         >
             <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
@@ -110,7 +110,7 @@
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                className="w-full rounded-full border border-gray-400 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="e.g. Fresh Farm Produce Co."
                 />
             </div>
@@ -122,7 +122,8 @@
                     type="text"
                     value={contactPerson}
                     onChange={(e) => setContactPerson(e.target.value)}
-                    className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    placeholder='e.g. Dororo'
+                    className="w-full rounded-full border border-gray-400 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
                 </div>
                 <div>
@@ -131,7 +132,8 @@
                     type="text"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    placeholder='e.g. 088 459 459'
+                    className="w-full rounded-full border border-gray-400 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
                 </div>
             </div>
@@ -142,7 +144,8 @@
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                placeholder='e.g. Dororo@gmail.com'
+                className="w-full rounded-full border border-gray-400 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
             </div>
 
@@ -152,7 +155,8 @@
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 rows={2}
-                className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                placeholder='...'
+                className="w-full rounded-xl border border-dashed border-gray-400   px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
             </div>
 
@@ -164,7 +168,7 @@
                     min={0}
                     value={leadTimeDays}
                     onChange={(e) => setLeadTimeDays(parseInt(e.target.value) || 0)}
-                    className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                    className="w-full rounded-full border border-gray-300 px-3 py-2 text-sm  focus:outline-none focus:ring-1 focus:ring-primary"
                 />
                 </div>
                 <div className="flex items-center gap-2 pb-2">
@@ -173,7 +177,7 @@
                     type="checkbox"
                     checked={isActive}
                     onChange={(e) => setIsActive(e.target.checked)}
-                    className="h-4 w-4 rounded-full border-gray-300 text-teal-600 focus:ring-teal-500"
+                    className="h-4 w-4 rounded-full border-gray-400 "
                 />
                 <label htmlFor="is_active" className="text-sm text-gray-700">
                     Active supplier
@@ -192,7 +196,7 @@
                 <button
                 type="submit"
                 disabled={submitting}
-                className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+                className="rounded-full  bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
                 >
                 {submitting ? 'Saving...' : isEdit ? 'Save Changes' : 'Add Supplier'}
                 </button>

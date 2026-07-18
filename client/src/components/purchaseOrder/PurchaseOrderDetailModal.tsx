@@ -72,7 +72,7 @@ const STATUS_CONFIG: Record<POStatus, {
 const NEXT_ACTIONS: Record<
   POStatus,
   { label: string; status: POStatus; variant: "primary" | "danger" | "success" }[]
-> = {
+  > = {
   DRAFT: [
     {
       label: "Send to Supplier",
@@ -136,8 +136,10 @@ const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> = ({
 
   const handleClose = () => {
     setIsClosing(true);
-    setIsVisible(false);
-    setTimeout(() => onClose(), 300);
+    setTimeout(() => {
+      setIsVisible(false);
+      onClose();
+    }, 300);
   };
 
   const handleTransition = async (status: POStatus) => {
@@ -149,6 +151,13 @@ const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> = ({
       setIsVisible(false);
       await new Promise(resolve => setTimeout(resolve, 300));
       await onTransition(status);
+
+      if(actions[0].label = 'Send to Supplier'){
+        alert('sented')
+        
+
+      }
+
     } catch (error) {
       console.error("Transition failed:", error);
       setIsTransitioning(false);
@@ -208,21 +217,21 @@ const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> = ({
   if (isClosing && !isVisible) {
     return null;
   }
-
+console.log(po);
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ease-out ${
         isVisible && !isClosing
-          ? "opacity-100 bg-black/20 backdrop-blur-sm"
+          ? "opacity-100 bg-black/40 backdrop-blur-sm"
           : "opacity-0 bg-black/0 backdrop-blur-none pointer-events-none"
       }`}
       onClick={handleClose}
     >
       <div
-        className={`relative w-full max-w-4xl max-h-[90vh] bg-white  rounded-4xl p-2 border-white border shadow-2xl overflow-hidden transition-all duration-200 ease-out ${
+        className={`relative w-full max-w-4xl max-h-[90vh] bg-white   rounded-4xl p-2 border-white border shadow-2xl overflow-hidden transition-all duration-300 ease-out ${
           isVisible && !isClosing
             ? "opacity-80 scale-100 translate-y-0"
-            : "opacity-0 scale-95 translate-y-4"
+            : "opacity-0 scale-80 -translate-y-4"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -261,7 +270,7 @@ const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> = ({
         {/* Content */}
         <div className="overflow-y-auto max-h-[calc(90vh-180px)] px-6 py-6 space-y-6">
           {/* Supplier Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-xl border border-blue-100">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-100 rounded-xl">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
                 <Building2 className="w-4 h-4" />

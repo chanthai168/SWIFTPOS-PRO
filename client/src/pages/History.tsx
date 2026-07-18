@@ -91,13 +91,13 @@ const History: React.FC = () => {
   const showingTo = Math.min(offset + PAGE_SIZE, total);
 
   return (
-    <div className="flex flex-col min-h-full">
-      <div className="bg-layer2 border-b border-gray-100 px-6 py-5">
+    <div className="flex flex-col min-h-full bg-layer2">
+      <div className="  px-6 py-5">
         <h1 className="text-2xl font-bold text-gray-900">History</h1>
       </div>
 
-      <div className="flex-1 px-6 py-6">
-        <div className="bg-layer2 rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="flex-1 px-4 py-4  rounded-tl-4xl bg-layer1">
+        <div className="bg-layer2 rounded-4xl border border-white shadow-sm overflow-hidden">
           <div className="flex gap-6 px-6 pt-5 border-b border-gray-100">
             {tabs.map(t => (
               <button
@@ -239,7 +239,7 @@ function HistoryRow({
   badgeClass: string;
 }) {
   return (
-    <div className="flex items-center gap-4 bg-white rounded-xl px-4 py-3 border border-gray-50 hover:shadow-sm transition-shadow">
+    <div className="flex items-center gap-4 bg-layer3 rounded-xl px-4 py-3 border border-gray-50 hover:shadow-sm transition-shadow">
       <div className="w-10 h-10 rounded-lg bg-yellow-50 flex items-center justify-center flex-shrink-0">
         {icon}
       </div>

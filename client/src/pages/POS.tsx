@@ -33,20 +33,30 @@ const POS: React.FC = () => {
   const taxAmt      = ((subtotal - discountAmt) * tax) / 100;
   const total       = subtotal - discountAmt + taxAmt;
 
-  const loadProducts = async () => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadProducts = async (isBackground = false) => {
     if (!shop?.id) return;
-    setLoadingProducts(true);
+    if (isBackground) {
+      setRefreshing(true);
+    } else {
+      setLoadingProducts(true);
+    }
     try {
       const data = await posService.getCatalog(shop.id);
       setProducts(data);
     } catch (e) {
       console.error('Failed to load catalog', e);
     } finally {
-      setLoadingProducts(false);
+      if (isBackground) {
+        setRefreshing(false);
+      } else {
+        setLoadingProducts(false);
+      }
     }
   };
 
-  useEffect(() => { loadProducts(); }, [shop?.id]);
+useEffect(() => { loadProducts(); }, [shop?.id]);
 
   const categories = useMemo(() => {
     const cats = Array.from(new Set(products.map(p => p.category ?? 'Uncategorized')));
@@ -89,11 +99,7 @@ const POS: React.FC = () => {
       };
       const res = await posService.createOrder(payload);
       const order: OrderResponse = res?.data ?? res;
-      clearCart();
-      setDiscount(0);
-      setTax(0);
-      setShowCheckout(false);
-      await loadProducts();
+
       return order;
     } catch (e: unknown) {
       console.error('Checkout failed', e);
@@ -105,8 +111,18 @@ const POS: React.FC = () => {
     }
   };
 
+  const handleReceiptClose = () => {
+    clearCart();
+    setDiscount(0);
+    setTax(0);
+    
+    loadProducts(true);
+    setShowCheckout(false);
+
+  };
+
   return (
-    <div className="flex flex-col h-full bg-layer2">
+    <div className="flex flex-col h-full bg-layer2   my-page-scroll-container overflow-y-auto h-screen">
 
       {/* Header */}
       <div className=" border-b border-gray-100 px-4 sm:px-6 py-4 flex items-center gap-3 flex-wrap">
@@ -122,26 +138,24 @@ const POS: React.FC = () => {
             className="flex items-center gap-1.5 text-xs font-medium text-gray-600 bg-layer3 hover:bg-gray-200 px-3 py-2 rounded-xl transition-colors">
             <ReceiptText size={14} /> Audit Log
           </button>
-          <button onClick={loadProducts} disabled={loadingProducts}
+          <button onClick={()=>loadProducts(false)} disabled={loadingProducts}
             className="w-8 h-8 rounded-xl bg-layer3 hover:bg-gray-200 flex items-center justify-center text-gray-500">
             <RefreshCw size={14} className={loadingProducts ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
 
-      <div className=' bg-layer1 rounded-4xl min-h-[90vh]'>
+      <div className=' bg-layer1 rounded-4xl   '>
         {/* Body */}
-        <div className="flex flex-1 gap-4 overflow-hidden p-4">
+        <div className="flex flex-1 flex-col gap-4 overflow-hidden p-4 xl:flex-row">
           {/* Left: Product Grid */}
 
-          <div className="flex-1 flex flex-col border border-white rounded-4xl bg-layer2 overflow-hidden p-4 gap-3">
-            <div className=' flex justify-between items-center'>
-
-
-              <div className="flex gap-1.5 overflow-x-auto pb-1 flex-nowrap">
+          <div className="flex-1 min-w-0 flex flex-col border border-white rounded-4xl bg-layer2 overflow-hidden p-4 gap-3">
+            <div className="flex flex-col gap-2 sm:flex-row  sm:items-center sm:justify-between">
+              <div className="flex gap-1.5 overflow-x-scroll w-[50%] pb-1 flex-nowrap min-w-0 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {categories.map(cat => (
                   <button key={cat} onClick={() => setActiveCategory(cat)}
-                    className={`flex-shrink-0 text-xs font-medium  px-3 py-1.5 rounded-full transition-all
+                    className={`flex-shrink-0 text-xs font-medium px-3 py-1.5 rounded-full transition-all
                       ${activeCategory === cat
                         ? 'bg-primary text-white shadow-sm'
                         : 'bg-gray-200 text-gray-600 hover:bg-gray-200 border border-gray-100'
@@ -150,13 +164,12 @@ const POS: React.FC = () => {
                   </button>
                 ))}
               </div>
-              <div className="flex gap-2 items-center w-128 pr-4 ">
+              <div className="flex gap-2 items-center w-full sm:w-72 md:w-80 min-w-0">
                 <SearchBar value={search} onChange={setSearch} />
               </div>
-
             </div>
 
-            <div className="overflow-y-auto pr-4" style={{height:'600px'}}>
+            <div className="overflow-y-auto pr-2 sm:pr-4" style={{height:'600px'}}>
               {loadingProducts ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                   {Array.from({ length: 10 }).map((_, i) => (
@@ -191,7 +204,7 @@ const POS: React.FC = () => {
           </div>
 
           {/* Right: Cart */}
-          <div className="w-72 xl:w-80 pl-0 flex flex-col">
+          <div className="w-full xl:w-72 2xl:w-80 flex flex-col shrink-0 min-w-0">
             <CartPanel
               items={items}
               subtotal={subtotal}
@@ -218,6 +231,7 @@ const POS: React.FC = () => {
             total={total}
             onConfirm={handleCheckout}
             onClose={() => setShowCheckout(false)}
+            handleReceiptClose = {handleReceiptClose}
           />
           
         )}
@@ -226,6 +240,7 @@ const POS: React.FC = () => {
         {showLogs && shop?.id && (
           <TransactionLog shopId={shop.id} onClose={() => setShowLogs(false)} />
         )}
+
       </div>
     </div>
   );

@@ -38,7 +38,7 @@ const Supplier: React.FC = () => {
         </div>
       </div>
 
-      <div className="pt-6 bg-layer1 min-h-150 rounded-t-4xl ">
+      <div className="pt-6 bg-layer1 min-h-150 rounded-tl-4xl ">
         {activeTab === "suppliers" && <SupplierList />}
         {activeTab === "purchase-orders" && <PurchaseOrderList />}
       </div>

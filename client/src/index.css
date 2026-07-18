@@ -4,12 +4,17 @@ body{
     background-color: #dedcdcd7;
     color:rgb(19, 19, 19);
 }
+
 *{
     font-family: 'Open Sans',sans-serif;
 }
 
 *{
   box-sizing: border-box;
+}
+
+.my-page-scroll-container {
+  scrollbar-gutter: stable;
 }
 
 @keyframes slide-in {
