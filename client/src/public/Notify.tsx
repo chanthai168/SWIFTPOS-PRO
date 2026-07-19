@@ -46,8 +46,8 @@ function NotificationItem({ item }: { item: NotificationItem }) {
     <div
       role="alert"
       className={[
-        "flex items-start gap-3 px-4 py-3.5 rounded-xl shadow-lg",
-        "min-w-[240px] max-w-xs relative overflow-hidden",
+        "flex items-start gap-3 px-4 py-3.5 rounded-xl relative z-100 shadow-lg",
+        "min-w-[240px] max-w-xs relative z-100 overflow-hidden",
         "font-sans text-sm font-medium",
         isSuccess
           ? "bg-green-900 text-green-100 border border-green-700"

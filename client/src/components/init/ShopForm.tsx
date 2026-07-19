@@ -55,7 +55,7 @@ const ShopGreetingForm: React.FC = () => {
             <>
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                  Welcome to <span className=' text-red-500'>SWIFTPOS</span>
+                  Welcome to <span className='bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent'>SwiftPOS Pro</span>
                 </h1>
                 <p className="text-gray-500">Please enter your shop name to continue</p>
               </div>

@@ -23,6 +23,7 @@ interface PurchaseOrderDetailModalProps {
   po: PurchaseOrderDetail;
   onClose: () => void;
   onTransition: (status: POStatus) => Promise<void>;
+  notifyEmailSent: (email:string) => void;
 }
 
 const STATUS_CONFIG: Record<POStatus, { 
@@ -117,17 +118,19 @@ const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> = ({
   po,
   onClose,
   onTransition,
+  notifyEmailSent
 }) => {
   const { shop } = useUser();
   const actions = NEXT_ACTIONS[po.status] ?? [];
   const statusConfig = STATUS_CONFIG[po.status];
   
   const [showEmailInput, setShowEmailInput] = useState(false);
-  const [emailInput, setEmailInput] = useState("");
+  const [emailInput, setEmailInput] = useState(po.supplier_email);
   const [emailSending, setEmailSending] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50);
@@ -151,12 +154,7 @@ const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> = ({
       setIsVisible(false);
       await new Promise(resolve => setTimeout(resolve, 300));
       await onTransition(status);
-
-      if(actions[0].label = 'Send to Supplier'){
-        alert('sented')
-        
-
-      }
+      onClose();
 
     } catch (error) {
       console.error("Transition failed:", error);
@@ -164,6 +162,7 @@ const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> = ({
       setIsClosing(false);
       setIsVisible(true);
     }
+    
   };
 
   const handleDownloadPdf = async () => {
@@ -190,9 +189,8 @@ const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> = ({
     setEmailSending(true);
     try {
       await purchaseOrderService.emailToSupplier(shop.id, po.id, emailInput);
-      alert(`Email sent to ${emailInput} successfully!`);
+      notifyEmailSent(emailInput);
       setShowEmailInput(false);
-      setEmailInput("");
     } catch (error) {
       alert("Failed to send email. Check your SMTP settings in server/.env");
       console.error(error);
@@ -217,10 +215,9 @@ const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> = ({
   if (isClosing && !isVisible) {
     return null;
   }
-console.log(po);
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ease-out ${
+      className={`fixed inset-0 z-40 flex items-center justify-center p-4 transition-all duration-300 ease-out ${
         isVisible && !isClosing
           ? "opacity-100 bg-black/40 backdrop-blur-sm"
           : "opacity-0 bg-black/0 backdrop-blur-none pointer-events-none"
@@ -388,6 +385,48 @@ console.log(po);
               </div>
             </div>
           </div>
+
+            {showEmailInput && (
+              <div>
+              <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                <Mail className="w-4 h-4" />
+                Email
+              </h3>
+
+              <div className="flex gap-12 items-center">
+                <input
+                  type="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="supplier@example.com"
+                  className="flex-1 min-w-[200px] px-3 py-2 text-sm border border-gray-300 rounded-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                  autoFocus
+                />
+                <div className=" flex gap-4">
+                <button
+                  onClick={() => setShowEmailInput(false)}
+                  disabled={isTransitioning}
+                  className="px-4 w-32 py-2 text-sm text-red-500 font-medium bg-layer3   hover:bg-gray-100 rounded-full transition-colors disabled:opacity-50"
+                >
+                  Cancel 
+                </button>
+                {actions[0].label != 'Send to Supplier' && (
+                  <button
+                    onClick={handleEmail}
+                    disabled={emailSending || !emailInput || isTransitioning}
+                    className="px-4 w-32 py-2 text-sm font-medium rounded-full text-white bg-primary transition-colors disabled:opacity-50"
+                  >
+                    {emailSending ? "Sending..." : "Send"}
+                  </button>
+                )}
+
+
+                </div>
+
+              </div>
+              </div>
+            )}
+
         </div>
 
         {/* Footer */}
@@ -422,45 +461,45 @@ console.log(po);
               </button>
             </div>
 
-            {showEmailInput && (
-              <div className="flex items-center gap-2">
-                <input
-                  type="email"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  placeholder="supplier@example.com"
-                  className="flex-1 min-w-[200px] px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                  autoFocus
-                />
-                <button
-                  onClick={handleEmail}
-                  disabled={emailSending || !emailInput || isTransitioning}
-                  className="px-4 py-2 text-sm font-medium rounded-full text-white bg-primary transition-colors disabled:opacity-50"
-                >
-                  {emailSending ? "Sending..." : "Send"}
-                </button>
-                <button
-                  onClick={() => setShowEmailInput(false)}
-                  disabled={isTransitioning}
-                  className="px-4 py-2 text-sm font-medium bg-gray-200  text-gray-700 hover:bg-gray-100 rounded-full transition-colors disabled:opacity-50"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
-
             {actions.length > 0 && (
               <div className="flex flex-wrap items-center gap-2">
-                {actions.map((action) => (
-                  <button
-                    key={action.status}
-                    onClick={() => handleTransition(action.status)}
-                    disabled={isTransitioning}
-                    className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${getVariantStyles(action.variant)} disabled:opacity-50`}
-                  >
-                    {isTransitioning ? "Processing..." : action.label}
-                  </button>
-                ))}
+                {actions[0].label == 'Send to Supplier' ? (
+                  <div className=" flex gap-4">
+                    <button
+                        key={actions[1].status}
+                        onClick={() => handleTransition(actions[1].status)}
+                        disabled={isTransitioning}
+                        className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${getVariantStyles(actions[1].variant)} disabled:opacity-50`}
+                      >
+                        {isTransitioning ? "Processing..." : actions[1].label}
+                    </button>
+
+                    <button
+                        key={actions[0].status}
+                        onClick={() => {handleEmail(),handleTransition(actions[0].status)}}
+                        disabled={isTransitioning}
+                        className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${getVariantStyles(actions[0].variant)} disabled:opacity-50`}
+                      >
+                        {isTransitioning ? "Processing..." : actions[0].label}
+                    </button>
+
+                  </div>
+                ):(
+                  <div className=" flex gap-4">
+                  {actions.reverse().map((action) => (
+                    <button
+                      key={action.status}
+                      onClick={() => handleTransition(action.status)}
+                      disabled={isTransitioning}
+                      className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${getVariantStyles(action.variant)} disabled:opacity-50`}
+                    >
+                      {isTransitioning ? "Processing..." : action.label}
+                    </button>
+                  ))}
+                  </div>
+                )}
+
+
               </div>
             )}
           </div>

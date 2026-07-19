@@ -21,7 +21,7 @@
 
     async findByShopId(shopId: number, status?: string, supplierId?: number) {
         let query = `
-        SELECT po.id, po.shop_id, po.supplier_id, s.name AS supplier_name,
+        SELECT po.id, po.shop_id, po.supplier_id,s.email as supplier_email, s.name AS supplier_name,
                 po.created_by_user_id, po.status, po.order_date, po.expected_delivery_date,
                 po.total_cost, po.notes, po.created_at, po.updated_at,
                 (SELECT COUNT(*) FROM purchase_order_items poi WHERE poi.purchase_order_id = po.id) AS item_count
@@ -48,7 +48,7 @@
 
     async findById(shopId: number, poId: number) {
         const [poRows] = await this.pool.query<RowDataPacket[]>(
-        `SELECT po.id, po.shop_id, po.supplier_id, s.name AS supplier_name, s.lead_time_days,
+        `SELECT po.id, po.shop_id, po.supplier_id,s.email as supplier_email, s.name AS supplier_name, s.lead_time_days,
                 po.created_by_user_id, po.status, po.order_date, po.expected_delivery_date,
                 po.total_cost, po.notes, po.created_at, po.updated_at
         FROM purchase_orders po

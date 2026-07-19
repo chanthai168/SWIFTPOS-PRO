@@ -211,7 +211,7 @@ const Step2Category: React.FC<Step2CategoryProps> = ({
         </button>
         <button
           onClick={onNext}
-          className="px-6 py-2 flex items-center bg-primary text-white font-medium rounded-xl hover:scale-102 transition-all"
+          className="px-6 py-2 flex items-center bg-primary text-white font-medium rounded-full hover:scale-102 transition-all"
         >
           Next: Variants <span className=' rotate-180'>{angleIcon}</span>
         </button>

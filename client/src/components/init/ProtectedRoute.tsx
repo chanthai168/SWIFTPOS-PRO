@@ -4,6 +4,32 @@ import { Navigate, Outlet,useNavigate } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { useUser } from '../../context/Context';
 
+import {Loader} from 'lucide-react';
+// Loading Component
+const LoadingSpinner = () => (
+  <div className="flex flex-col items-center justify-center h-screen w-screen">
+    <div className="relative">
+      <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Loader size={24} className="text-indigo-600 animate-pulse" />
+      </div>
+    </div>
+    <p className="mt-4 text-gray-600 font-medium">Loading...</p>
+  </div>
+);
+
+const LoadingSpinnersetUp = () => (
+  <div className="flex flex-col items-center justify-center h-screen w-screen">
+    <div className="relative">
+      <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Loader size={24} className="text-indigo-600 animate-pulse" />
+      </div>
+    </div>
+    <p className="mt-4 text-gray-600 font-medium">Setting up your account...</p>
+  </div>
+);
+
 const ProtectedRoute = () => {
   const navigate  = useNavigate();
   const { isAuthenticated, isLoading, user, getAccessTokenSilently } = useAuth0();
@@ -23,7 +49,6 @@ const ProtectedRoute = () => {
         const token = await getAccessTokenSilently();
 
         // Run both requests or manage them cleanly
-        console.log("hi");
         const response = await fetch('http://localhost:5000/api/v1/auth/register', {
           method: 'POST',
           headers: {
@@ -76,7 +101,7 @@ const ProtectedRoute = () => {
   }, [user, isInitialized, getAccessTokenSilently, login, setIsInitialized]);
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading ...</div>;
+    return <LoadingSpinner/>
   }
 
   if (!isAuthenticated) {
@@ -84,7 +109,7 @@ const ProtectedRoute = () => {
   }
 
   if (!isInitialized) {
-    return <div className="flex items-center justify-center min-h-screen">Setting up your account...</div>;
+    return <LoadingSpinnersetUp/>
   }
 
   return <Outlet />;

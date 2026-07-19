@@ -137,7 +137,7 @@ const ItemsRanking: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center h-96">
+            <div className="flex flex-col  items-center justify-center h-96">
                 <div className="relative">
                     <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200"></div>
                     <div className="absolute top-0 left-0 h-16 w-16 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
@@ -164,7 +164,7 @@ const ItemsRanking: React.FC = () => {
 
     if (!items || items.length === 0) {
         return (
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50 border border-gray-200 rounded-xl p-12 text-center">
+            <div className="bg-gradient-to-br h-full from-gray-50 to-blue-50 border border-gray-200 rounded-xl p-12 text-center">
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
                     <ShoppingCartIcon className="w-10 h-10 text-gray-400" />
                 </div>

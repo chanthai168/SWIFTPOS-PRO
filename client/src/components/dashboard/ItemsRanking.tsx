@@ -166,12 +166,14 @@
 
         if (!items || items.length === 0) {
             return (
-                <div className="bg-gradient-to-br from-gray-50 to-blue-50 border border-gray-200 rounded-xl p-12 text-center">
+                <div className=" flex justify-center items-center  h-full bg-layer2 border border-gray-200 rounded-xl p-12 text-center">
+                    <div>
                     <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
                         <ShoppingCartIcon className="w-10 h-10 text-gray-400" />
                     </div>
                     <h3 className="text-xl font-semibold text-gray-800">No Sales Data Yet</h3>
                     <p className="text-gray-600 mt-2">Start selling to see your best performing items</p>
+                    </div>
                 </div>
             );
         }

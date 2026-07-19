@@ -159,6 +159,10 @@ const PurchaseOrderList: React.FC = () => {
     }
   };
 
+  const notifyEmailSent = (email:string) => {
+    notify("success",`Email sent to ${email} successfully!`)
+  }
+
   return (
     <div className="max-w-7xl mx-auto  px-4 sm:px-6 lg:px-8 pb-10">
       <NotificationContainer notifications={notifications} />
@@ -289,6 +293,7 @@ const PurchaseOrderList: React.FC = () => {
           po={viewingPO}
           onClose={() => setViewingPO(null)}
           onTransition={handleTransition}
+          notifyEmailSent={notifyEmailSent}
         />
       )}
     </div>

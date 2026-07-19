@@ -279,13 +279,13 @@ const VariantForm: React.FC<VariantFormProps> = ({ onSubmit, onCancel }) => {
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
+          className="px-4 py-2 bg-gray-200 text-red-500 font-medium rounded-full "
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700"
         >
           Add Variant
         </button>

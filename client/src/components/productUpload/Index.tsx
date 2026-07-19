@@ -113,12 +113,12 @@ const ProductUpload: React.FC<ProductUploadProps> = ({ shopId, onSuccess, onCanc
         </div> */}
 
         {/* Progress Steps */}
-        <div className="mb-8">
+        <div className="mb-4">
           <div className="flex items-center justify-between">
             {steps.map((step, index) => (
               <React.Fragment key={step.number}>
                 <div className="flex flex-col items-center">
-                  <div
+                  {/* <div
                     className={`w-8 h-8 rounded-xs rotate-45 flex items-center justify-center font-semibold text-sm transition-colors ${
                       currentStep >= step.number
                         ? 'bg-blue-500 text-gray-100'
@@ -126,9 +126,9 @@ const ProductUpload: React.FC<ProductUploadProps> = ({ shopId, onSuccess, onCanc
                     }`}
                   >
                     <span className=' -rotate-45'>{step.number}</span>
-                  </div>
+                  </div> */}
                   <div className="mt-2 text-center">
-                    <p className="text-sm font-medium text-gray-900">{step.title}</p>
+                    <p className={`text-sm font-medium text-gray-900 ${currentStep >= step.number ? "text-primary":""} `}>{step.title}</p>
                     <p className="text-xs text-gray-500">{step.description}</p>
                   </div>
                 </div>
@@ -152,7 +152,7 @@ const ProductUpload: React.FC<ProductUploadProps> = ({ shopId, onSuccess, onCanc
         )}
 
         {/* Step Content */}
-        <div className="bg-layer2 rounded-xl shadow-lg p-6 sm:p-8">
+        <div className="bg-layer2 rounded-4xl border border-white shadow-lg p-6 sm:p-8">
           {currentStep === 1 && (
             <Step1Product
               shopId={shopId}

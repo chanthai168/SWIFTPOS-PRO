@@ -75,7 +75,7 @@ const Inventory: React.FC = () => {
         <div className="bg-layer1 rounded-4xl pb-4">
           <div className="flex flex-wrap p-2">
             {/* Top row - 2 cards */}
-            <div className="w-full sm:w-1/2 md:w-1/5 p-2">
+            <div className="w-full sm:w-1/2 md:w-1/5 p-1.5">
               <div className="bg-layer2 border border-white p-4 rounded-4xl transition-all duration-300 h-full hover:shadow-md">
                 <div className="flex items-center gap-2">
                   <div className="flex justify-center items-center rounded-full w-12 h-12 bg-purple-100 text-purple-500">
@@ -90,7 +90,7 @@ const Inventory: React.FC = () => {
               </div>
             </div>
 
-            <div className="w-full sm:w-1/2 md:w-1/5 p-2">
+            <div className="w-full sm:w-1/2 md:w-1/5 p-1.5">
               <div className="bg-layer2 border border-white p-4 rounded-4xl transition-all duration-300 h-full hover:shadow-md">
                 <div className="flex items-center gap-2">
                   <div className="flex justify-center items-center rounded-full w-12 h-12 bg-blue-100 text-blue-500">
@@ -107,7 +107,7 @@ const Inventory: React.FC = () => {
             </div>
 
             {/* Bottom row - 3 cards */}
-            <div className="w-full sm:w-1/3 md:w-1/5 p-2">
+            <div className="w-full sm:w-1/3 md:w-1/5 p-1.5">
               <div className="bg-layer2 border border-white p-4 rounded-4xl transition-all duration-300 h-full hover:shadow-md">
                 <div className="flex items-center gap-2">
                   <div className="flex justify-center items-center rounded-full w-12 h-12 bg-green-100 text-green-500">
@@ -122,7 +122,7 @@ const Inventory: React.FC = () => {
               </div>
             </div>
 
-            <div className="w-full sm:w-1/3 md:w-1/5 p-2">
+            <div className="w-full sm:w-1/3 md:w-1/5 p-1.5">
               <div className="bg-layer2 border border-white p-4 rounded-4xl transition-all duration-300 h-full hover:shadow-md">
                 <div className="flex items-center gap-2">
                   <div className="flex justify-center items-center rounded-full w-12 h-12 bg-orange-100 text-orange-500">
@@ -137,7 +137,7 @@ const Inventory: React.FC = () => {
               </div>
             </div>
 
-            <div className="w-full sm:w-1/3 md:w-1/5 p-2">
+            <div className="w-full sm:w-1/3 md:w-1/5 p-1.5">
               <div className="bg-layer2 border border-white p-4 rounded-4xl transition-all duration-300 h-full hover:shadow-md">
                 <div className="flex items-center gap-2">
                   <div className="flex justify-center items-center rounded-full w-12 h-12 bg-red-100 text-red-500">

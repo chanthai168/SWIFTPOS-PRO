@@ -173,7 +173,7 @@ const ProductVariantList: React.FC<ProductVariantListProps> = ({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 ">
 
       <div className="mt-6">
         <h3 className="text-xl font-semibold mb-4">Inventory Details</h3>
@@ -213,13 +213,13 @@ const ProductVariantList: React.FC<ProductVariantListProps> = ({
 
         return (
         
-          <div key={variant.id}>
+          <div key={variant.id} >
             <div
               onClick={()=>handleSetActiveId(variant.id)}
 
-              className={`mb-2 group flex items-center gap-2 border  border-t  p-3 transition-all duration-200 hover:shadow-sm ${
+              className={`mb-2 group flex  items-center gap-2 border-2  p-3 transition-all duration-200 hover:shadow-sm ${
                 isEditing ? 'bg-blue-50 border border-blue-200 rounded-xl' : 'hover:bg-gray-50'
-              } ${activeId == variant.id? 'border border-dashed border-green-500 rounded-lg': ' border-transparent border-t-gray-200'}`}
+              } ${activeId == variant.id? 'border-2 border-dashed border-primary rounded-lg': ' border-transparent border-t-gray-200'}`}
             >
               {/* Product Image */}
               <div className="w-20 h-20 flex justify-center items-center  p-2 border border-gray-200 overflow-hidden rounded-xl">
@@ -243,7 +243,27 @@ const ProductVariantList: React.FC<ProductVariantListProps> = ({
               </div>
 
               {/* Pricing Section */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+
+                <div className="hidden md:block">
+                  <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">
+                    status
+                  </p>
+
+                    {Number(variant.inventory.available_quantity) >= Number(variant.inventory.low_stock_threshold) && (
+                      <p className='bg-green-100 rounded-full text-green-600'>In stock</p>
+                    )}
+
+                    {Number(variant.inventory.available_quantity) != 0 && Number(variant.inventory.available_quantity) < Number(variant.inventory.low_stock_threshold) && (
+                      <p className='bg-orange-100 rounded-full text-orange-600'>low stock</p>
+                    )}
+
+                    {Number(variant.inventory.available_quantity) == 0 && (
+                      <p className='bg-red-100 rounded-full text-red-600'>Out stock</p>
+                    )}
+ 
+                </div>
+
                 {/* Cost Price */}
                 <div className="hidden md:block">
                   <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">

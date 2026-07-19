@@ -250,9 +250,9 @@ export const Sidebar: React.FC = () => {
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed md:sticky top-0  left-0 h-screen bg-layer2 flex flex-col justify-between p-4 z-40 transition-all duration-300 ease-in-out
+        className={`fixed md:sticky top-0  left-0 h-screen bg-layer2 flex flex-col justify-between p-4 z-40 transition-all duration-300 ease-in-out overflow-hidden
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          w-64 ${isCollapsed ? 'md:w-18.5' : 'md:w-64'}
+          w-64 ${isCollapsed ? 'md:w-18.5 ' : 'md:w-64'}
         `}
       >
         {/* Upper Section */}
@@ -268,14 +268,14 @@ export const Sidebar: React.FC = () => {
               <span className={`font-semibold text-xl text-gray-900 tracking-tight whitespace-nowrap transition-opacity duration-200
                 ${isCollapsed ? 'md:opacity-0 md:w-0 md:pointer-events-none' : 'opacity-100'}
               `}>
-                SwiftPOS Pro
+                <p className='bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 bg-clip-text text-transparent'>SwiftPOS Pro</p>
               </span>
             </div>
 
             {/* Desktop Collapse Toggle Button */}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="hidden md:flex p-1.5 hover:bg-gray-100 text-gray-500 rounded-lg transition-colors absolute -right-5"
+              className="hidden md:flex p-1.5  text-gray-500 rounded-lg transition-colors absolute -right-5"
             >
               {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
             </button>

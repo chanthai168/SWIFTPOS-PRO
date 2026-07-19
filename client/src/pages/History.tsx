@@ -91,7 +91,7 @@ const History: React.FC = () => {
   const showingTo = Math.min(offset + PAGE_SIZE, total);
 
   return (
-    <div className="flex flex-col min-h-full bg-layer2">
+    <div className="flex flex-col min-h-full bg-layer2 my-page-scroll-container overflow-y-auto h-screen">
       <div className="  px-6 py-5">
         <h1 className="text-2xl font-bold text-gray-900">History</h1>
       </div>
@@ -260,7 +260,7 @@ function HistoryRow({
 function EmptyState({ message }: { message: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <p className="text-4xl mb-3">📋</p>
+      <p className="text-4xl mb-3"></p>
       <p className="text-sm text-gray-400">{message}</p>
     </div>
   );

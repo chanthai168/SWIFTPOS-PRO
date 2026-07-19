@@ -179,7 +179,7 @@ const Step3Variants: React.FC<Step3VariantsProps> = ({
         <button
           onClick={onSubmit}
           disabled={formData.variants.length === 0 || isLoading}
-          className="px-8 py-2 bg-primary text-white font-medium rounded-xl hover:scale-102 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+          className="px-8 py-2 bg-primary text-white font-medium rounded-full hover:scale-102 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
         >
           {isLoading ? (
             <>

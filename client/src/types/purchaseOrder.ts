@@ -7,6 +7,7 @@
     shop_id: number;
     supplier_id: number;
     supplier_name: string;
+    supplier_email: string;
     created_by_user_id: number;
     status: POStatus;
     order_date: string;

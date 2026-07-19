@@ -85,9 +85,13 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
 
       {/* Dropdown menu */}
       {isOpen && (
-        <div className="absolute z-50 max-h-60 overflow-y-scroll -top-64 mt-1.5 w-full mb-4 min-w-[280px] rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden">
+        <div className="absolute z-50 max-h-60  -top-64 mt-1.5 w-full mb-4 min-w-[280px] rounded-xl border border-gray-200  bg-white shadow-lg overflow-hidden">
           {/* Search bar */}
-          <div className="p-2 border-b border-gray-100">
+
+
+          {/* Options list */}
+          <div className="max-h-60 overflow-y-auto ">
+                      <div className="p-2 border-b border-gray-100">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
@@ -101,9 +105,6 @@ const ProductDropdown: React.FC<ProductDropdownProps> = ({
               />
             </div>
           </div>
-
-          {/* Options list */}
-          <div className="max-h-60 overflow-y-auto ">
             {filteredVariants.length === 0 ? (
               <div className="px-4 py-3 text-sm text-gray-400 text-center">
                 No products found
