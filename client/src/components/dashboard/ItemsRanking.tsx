@@ -5,16 +5,12 @@
     import { 
         XMarkIcon, 
         ShoppingCartIcon, 
-        TrophyIcon,
-        ArrowPathIcon,
-        ClockIcon,
         MapPinIcon,
         TagIcon,
         CurrencyDollarIcon,
         CubeIcon,
         ArrowTrendingUpIcon,
         ArrowTrendingDownIcon,
-        BackwardIcon,
         FireIcon,
         StarIcon
     } from '@heroicons/react/24/outline';
