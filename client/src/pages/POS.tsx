@@ -169,7 +169,7 @@ useEffect(() => { loadProducts(); }, [shop?.id]);
               </div>
             </div>
 
-            <div className="overflow-y-auto pr-2 sm:pr-4" style={{height:'600px'}}>
+            <div className="overflow-y-auto pr-2 sm:pr-4" style={{height:'668px'}}>
               {loadingProducts ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                   {Array.from({ length: 10 }).map((_, i) => (

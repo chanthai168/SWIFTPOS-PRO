@@ -108,13 +108,6 @@
             return new Intl.NumberFormat('en-US').format(n || 0);
         };
 
-        const getRankIcon = (rank: number) => {
-            if (rank === 1) return <TrophyIcon className="w-6 h-6 text-yellow-500" />;
-            if (rank === 2) return <TrophyIcon className="w-6 h-6 text-gray-400" />;
-            if (rank === 3) return <TrophyIcon className="w-6 h-6 text-amber-600" />;
-            return <span className="text-sm font-bold text-gray-500">#{rank}</span>;
-        };
-
         const getRankColor = (rank: number) => {
             if (rank === 1) return 'bg-yellow-100 text-yellow-800 border-yellow-200';
             if (rank === 2) return 'bg-gray-100 text-gray-700 border-gray-200';

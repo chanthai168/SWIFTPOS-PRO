@@ -10,7 +10,7 @@
         SELECT id, shop_id, name, contact_person, phone, email, address,
                 lead_time_days, is_active, created_at, updated_at
         FROM suppliers
-        WHERE shop_id = ?
+        WHERE shop_id = ? AND deleted_at is null
         `;
         const params: (number | string)[] = [shopId];
 
@@ -98,7 +98,8 @@
 
     async remove(shopId: number, supplierId: number) {
         const [result] = await this.pool.query<ResultSetHeader>(
-        `DELETE FROM suppliers WHERE id = ? AND shop_id = ?`,
+        `update suppliers set deleted_at = now() WHERE id = ? AND shop_id = ?`,
+
         [supplierId, shopId]
         );
         if (result.affectedRows === 0) throw new BadInputError(`Supplier with id ${supplierId} not found`);
